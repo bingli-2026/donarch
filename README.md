@@ -19,7 +19,7 @@ A complete, ready-to-use desktop environment configuration for Arch Linux featur
 
 ## Requirements
 
-- **OS**: Arch Linux or Arch-based distribution (Manjaro, EndeavourOS, etc.)
+- **OS**: Arch Linux or Arch-based distribution (CachyOS, EndeavourOS, etc.)
 - **AUR Helper**: paru or yay
 - **Internet Connection**: Required for package installation
 
