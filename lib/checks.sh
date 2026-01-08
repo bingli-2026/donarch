@@ -31,7 +31,7 @@ check_arch_based() {
 # Detect AUR helper
 detect_aur_helper() {
     local aur_helper=""
-    
+
     if command_exists paru; then
         aur_helper="paru"
     elif command_exists yay; then
@@ -49,8 +49,8 @@ detect_aur_helper() {
         echo ""
         return 1
     fi
-    
-    log_success "AUR helper detected: $aur_helper"
+
+    log_success "AUR helper detected: $aur_helper" >&2
     echo "$aur_helper"
     return 0
 }
@@ -59,20 +59,20 @@ detect_aur_helper() {
 check_base_packages() {
     local missing_packages=()
     local required_packages=("git" "base-devel")
-    
+
     for pkg in "${required_packages[@]}"; do
         if ! pacman -Q "$pkg" >/dev/null 2>&1; then
             missing_packages+=("$pkg")
         fi
     done
-    
+
     if [ ${#missing_packages[@]} -gt 0 ]; then
         log_warn "Missing required packages: ${missing_packages[*]}"
         log_info "Installing required packages..."
         sudo pacman -S --needed --noconfirm "${missing_packages[@]}"
         return $?
     fi
-    
+
     log_success "All base packages present"
     return 0
 }
@@ -102,20 +102,23 @@ check_internet() {
 # Run all checks
 run_all_checks() {
     log_step "Running System Checks"
-    
+
     check_not_root || return 1
     check_arch_based || return 1
     check_internet || return 1
     check_base_packages || return 1
     check_dialog || return 1
-    
+
     # Detect AUR helper and store in variable
     AUR_HELPER=$(detect_aur_helper) || return 1
     export AUR_HELPER
-    
+
+    # Debug: verify AUR_HELPER is set correctly
+    log_info "Using AUR helper: $AUR_HELPER" >&2
+
     echo ""
     log_success "All system checks passed!"
     echo ""
-    
+
     return 0
 }
