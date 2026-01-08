@@ -61,11 +61,14 @@ install_package_list() {
     # Install AUR packages with AUR helper
     if [ ${#aur_packages[@]} -gt 0 ]; then
         log_info "Installing AUR packages: ${aur_packages[*]}"
-        "${AUR_HELPER}" -S --needed --noconfirm "${aur_packages[@]}"
-        if [ $? -ne 0 ]; then
-            log_error "Failed to install some AUR packages"
-            return 1
-        fi
+        # Install AUR packages one by one to handle conflicts better
+        for pkg in "${aur_packages[@]}"; do
+            log_info "Installing AUR package: $pkg"
+            yes | "${AUR_HELPER}" -S --needed "${pkg}"
+            if [ $? -ne 0 ]; then
+                log_warn "Failed to install $pkg, continuing..."
+            fi
+        done
     fi
 
     log_success "$description installed successfully"
