@@ -41,7 +41,7 @@ die() {
 
 # Detect the actual user (handles sudo case)
 detect_user() {
-    if [ -n "$SUDO_USER" ]; then
+    if [ -n "${SUDO_USER:-}" ]; then
         echo "$SUDO_USER"
     else
         echo "$USER"
@@ -59,7 +59,7 @@ backup_existing_configs() {
     local user_home=$(get_user_home)
     local config_dir="$user_home/.config"
     local backup_dir="$user_home/.config.backup-$(date +%Y%m%d_%H%M%S)"
-    
+
     if [ -d "$config_dir" ]; then
         log_info "Creating backup of existing configs..."
         cp -r "$config_dir" "$backup_dir"
@@ -75,18 +75,18 @@ backup_existing_configs() {
 prompt_yes_no() {
     local prompt="$1"
     local default="${2:-n}"
-    
+
     if [ "$default" = "y" ]; then
         prompt="$prompt [Y/n]: "
     else
         prompt="$prompt [y/N]: "
     fi
-    
+
     read -p "$prompt" -r response
     response=${response:-$default}
-    
+
     case "$response" in
-        [yY][eE][sS]|[yY]) 
+        [yY][eE][sS]|[yY])
             return 0
             ;;
         *)
