@@ -1,8 +1,8 @@
 # BD-Configs
 
-**Beautiful Dots** for Hyprland & Niri with DankMaterialShell
+**Black Don's Dots** for Hyprland & Niri with DankMaterialShell
 
-A complete, ready-to-use desktop environment configuration for Arch Linux featuring modern Wayland compositors with Material Design aesthetics.
+A complete, ready-to-use desktop environment configuration for Arch Linux featuring modern Wayland compositors with Catppuccin Design aesthetics.
 
 ## Features
 
@@ -16,7 +16,7 @@ A complete, ready-to-use desktop environment configuration for Arch Linux featur
 ## Screenshots
 
 ![BD-Configs Desktop](assets/screenshots/desktop-overview.png)
-*BD-Configs running with Hyprland, DankMaterialShell, and Catppuccin Mocha theme*
+*BD-Configs running with Niri, DankMaterialShell, and Catppuccin Mocha theme*
 
 ## Requirements
 
@@ -92,11 +92,13 @@ The installer will guide you through:
 #### Universal (Both Compositors)
 - `Super + Space` - Application launcher
 - `Super + T` or `Super + Return` - Terminal (kitty)
+- `Super + Ctrl + Return` - Floating Terminal (kitty)
 - `Super + Q` - Close window
 - `Super + F` - File manager (nemo)
 - `Super + B` - Browser (if installed)
 - `Super + Shift + R` - Reload compositor config
 - `Super + Alt + L` - Lock screen
+- `Super + Ctrl + Up or Down` - Move relative workspaces
 
 #### Media Keys
 - `XF86AudioRaiseVolume` - Volume up
@@ -105,15 +107,6 @@ The installer will guide you through:
 - `XF86MonBrightnessUp` - Brightness up
 - `XF86MonBrightnessDown` - Brightness down
 
-#### Hyprland-Specific
-- `Super + 1-9` - Switch to workspace
-- `Super + Shift + 1-9` - Move window to workspace
-- `Super + Mouse` - Move/resize windows
-
-#### Niri-Specific
-- Workspace scrolling with gestures
-- `Super + Left/Right` - Switch workspaces
-- `Super + Shift + Left/Right` - Move window between workspaces
 
 ## Customization
 
