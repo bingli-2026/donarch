@@ -14,16 +14,18 @@ source "$REPO_DIR/lib/packages.sh"
 source "$REPO_DIR/lib/dotfiles.sh"
 source "$REPO_DIR/lib/themes.sh"
 source "$REPO_DIR/lib/greeter.sh"
+source "$REPO_DIR/lib/dcli.sh"
 
 # Installation state variables
 INSTALL_HYPRLAND=false
 INSTALL_NIRI=false
+INSTALL_DCLI=false
 OPTIONAL_APPS=()
 
 # Display welcome screen
 show_welcome() {
     print_banner
-    
+
     cat << 'EOF'
 This installer will set up Beautiful Dots configurations for:
   • Hyprland - Dynamic tiling Wayland compositor
@@ -41,7 +43,7 @@ The installer will:
 Your existing .config will be backed up before any changes.
 
 EOF
-    
+
     if ! prompt_yes_no "Do you want to continue?" "y"; then
         echo ""
         log_info "Installation cancelled"
@@ -52,18 +54,18 @@ EOF
 # User selection menu for compositors
 select_compositors() {
     log_step "Compositor Selection"
-    
+
     # Use dialog for selection
     local choices=$(dialog --stdout --checklist "Select compositor(s) to install:" 15 50 3 \
         1 "Hyprland" on \
         2 "Niri" off \
         3 "Both" off)
-    
+
     if [ -z "$choices" ]; then
         log_error "No compositor selected"
         exit 1
     fi
-    
+
     # Parse selections
     for choice in $choices; do
         case $choice in
@@ -72,7 +74,7 @@ select_compositors() {
             3) INSTALL_HYPRLAND=true; INSTALL_NIRI=true ;;
         esac
     done
-    
+
     clear
     log_info "Selected compositors:"
     [ "$INSTALL_HYPRLAND" = true ] && echo "  • Hyprland"
@@ -83,13 +85,13 @@ select_compositors() {
 # User selection menu for optional apps
 select_optional_apps() {
     log_step "Optional Applications"
-    
+
     # Use dialog for selection
     local choices=$(dialog --stdout --checklist "Select optional applications to install:" 15 60 3 \
         1 "Zen Browser (privacy-focused browser)" off \
         2 "Zed (modern code editor)" off \
         3 "Helix (modal text editor)" off)
-    
+
     # Parse selections
     for choice in $choices; do
         case $choice in
@@ -98,7 +100,7 @@ select_optional_apps() {
             3) OPTIONAL_APPS+=("helix") ;;
         esac
     done
-    
+
     clear
     if [ ${#OPTIONAL_APPS[@]} -gt 0 ]; then
         log_info "Selected optional applications:"
@@ -111,13 +113,26 @@ select_optional_apps() {
     echo ""
 }
 
+# Ask user if they want dcli integration
+select_dcli() {
+    clear
+    if prompt_dcli_installation; then
+        INSTALL_DCLI=true
+        log_info "dcli will be installed and configured"
+    else
+        INSTALL_DCLI=false
+        log_info "Skipping dcli installation"
+    fi
+    echo ""
+}
+
 # Backup confirmation
 confirm_backup() {
     log_step "Configuration Backup"
-    
+
     log_info "Your existing ~/.config directory will be backed up before installation"
     echo ""
-    
+
     if prompt_yes_no "Create backup of existing configurations?" "y"; then
         backup_existing_configs
     else
@@ -129,7 +144,7 @@ confirm_backup() {
 # Post-installation steps
 post_install() {
     log_step "Post-Installation"
-    
+
     # Offer to set fish as default shell
     if command_exists fish; then
         echo ""
@@ -138,7 +153,7 @@ post_install() {
             log_success "Default shell set to fish"
         fi
     fi
-    
+
     echo ""
     print_separator
     echo ""
@@ -161,11 +176,20 @@ post_install() {
     echo "  All configs are symlinked from: $REPO_DIR/configs/"
     echo "  Edit files in the repo and changes will apply immediately"
     echo ""
+
+    if [ "$INSTALL_DCLI" = true ]; then
+        echo -e "${CYAN}dcli Configuration:${NC}"
+        echo "  dcli config location: ~/.config/arch-config"
+        echo "  Run 'dcli status' to view your configuration"
+        echo "  Run 'dcli repo init' to set up git tracking (recommended)"
+        echo ""
+    fi
+
     echo -e "${YELLOW}Tip:${NC} Keep the bd-configs directory to easily update configs!"
     echo ""
     print_separator
     echo ""
-    
+
     if prompt_yes_no "Reboot now?" "n"; then
         log_info "Rebooting..."
         sleep 2
@@ -179,37 +203,43 @@ post_install() {
 main() {
     # Welcome screen
     show_welcome
-    
+
     # Run system checks
     run_all_checks || die "System checks failed"
-    
+
     # User selections
     select_compositors
     select_optional_apps
-    
+    select_dcli
+
     # Confirm backup
     confirm_backup
-    
+
     # Install packages
     install_core_packages "$REPO_DIR" || die "Failed to install core packages"
     install_compositor_packages "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" || die "Failed to install compositor packages"
     install_theme_packages "$REPO_DIR" || die "Failed to install theme packages"
     install_dms_packages "$REPO_DIR" || die "Failed to install DMS packages"
     install_required_apps "$REPO_DIR" || die "Failed to install required applications"
-    
+
     if [ ${#OPTIONAL_APPS[@]} -gt 0 ]; then
         install_optional_apps "$REPO_DIR" "${OPTIONAL_APPS[@]}"
     fi
-    
+
     # Deploy configurations
     deploy_configurations "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" || die "Failed to deploy configurations"
-    
+
     # Apply themes
     apply_themes "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" || die "Failed to apply themes"
-    
+
     # Setup greeter
     setup_greeter "$INSTALL_HYPRLAND" "$INSTALL_NIRI" || die "Failed to setup greeter"
-    
+
+    # Setup dcli if selected
+    if [ "$INSTALL_DCLI" = true ]; then
+        setup_dcli "$(detect_user)" "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" "${OPTIONAL_APPS[@]}" || log_warn "dcli setup failed, but continuing with installation"
+    fi
+
     # Post-installation
     post_install
 }

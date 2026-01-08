@@ -16,6 +16,7 @@ If you enjoy what I do, consider supporting me on Ko-fi! Every little bit means 
 - **DMS-Greeter**: Elegant display manager for seamless session switching
 - **Curated Applications**: kitty terminal, fish shell, nemo file manager, and optional apps
 - **Symlinked Configs**: Easy to update - edit files in the repo and changes apply immediately
+- **Optional dcli Integration**: Declarative package management for tracking your system configuration in YAML and git
 
 ## Screenshots
 
@@ -43,10 +44,11 @@ The installer will guide you through:
 1. System compatibility checks
 2. Compositor selection (Hyprland, Niri, or both)
 3. Optional application selection
-4. Package installation
-5. Configuration deployment
-6. Theme application
-7. Display manager setup
+4. dcli integration (optional)
+5. Package installation
+6. Configuration deployment
+7. Theme application
+8. Display manager setup
 
 ### What Gets Installed
 
@@ -111,6 +113,74 @@ The installer will guide you through:
 - `XF86MonBrightnessUp` - Brightness up
 - `XF86MonBrightnessDown` - Brightness down
 
+
+## dcli Integration (Optional)
+
+BD-Configs supports optional integration with **dcli** - a declarative package management tool for Arch Linux inspired by NixOS.
+
+### What is dcli?
+
+dcli allows you to:
+- Manage all your packages in YAML configuration files
+- Track your entire system configuration in git
+- Sync your setup across multiple machines
+- Organize packages into reusable modules
+- Declaratively manage systemd services
+
+### What happens when you enable dcli?
+
+If you choose to install dcli during setup, the installer will:
+1. Install `dcli-arch-git` from AUR
+2. Create a dcli configuration structure at `~/.config/arch-config`
+3. Generate modules for all BD-Configs packages:
+   - `base` - Core dependencies
+   - `themes` - Catppuccin Mocha theme packages
+   - `dms` - DankMaterialShell packages
+   - `apps` - Terminal, file manager, shell
+   - `hyprland` - Hyprland compositor (if selected)
+   - `niri` - Niri compositor (if selected)
+4. Create a host configuration file with all installed packages declared
+
+### Using dcli after installation
+
+```bash
+# View your current configuration
+dcli status
+
+# Sync packages (install missing, optionally remove extras)
+dcli sync
+
+# List all modules
+dcli module list
+
+# Enable/disable modules
+dcli module enable gaming
+dcli module disable development
+
+# Search and install packages
+dcli search
+dcli install firefox
+
+# Set up git tracking (recommended for multi-machine setups)
+dcli repo init
+
+# Edit configurations
+dcli edit
+```
+
+### Multi-machine setup with dcli
+
+```bash
+# On your first machine
+dcli repo init              # Initialize git repository
+dcli repo push              # Push to your git remote
+
+# On additional machines
+dcli repo clone             # Clone your configuration
+dcli sync                   # Install all packages from config
+```
+
+For more information, visit the [dcli repository](https://gitlab.com/theblackdon/dcli-arch).
 
 ## Customization
 
