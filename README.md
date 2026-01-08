@@ -15,7 +15,8 @@ A complete, ready-to-use desktop environment configuration for Arch Linux featur
 
 ## Screenshots
 
-> Add screenshots here after installation
+![BD-Configs Desktop](assets/screenshots/desktop-overview.png)
+*BD-Configs running with Hyprland, DankMaterialShell, and Catppuccin Mocha theme*
 
 ## Requirements
 
