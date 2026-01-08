@@ -4,8 +4,8 @@ qt5ct
 qt6ct
 gtk3
 gtk4
-catppuccin-mocha-gtk-theme-git
+catppuccin-gtk-theme-mocha
 tela-icon-theme-purple-git
-bibata-cursor-theme
-catppuccin-kvantum-git
-matugen
+bibata-cursor-theme-bin
+kvantum-theme-catppuccin-git
+matugen-bin
