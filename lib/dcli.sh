@@ -59,7 +59,6 @@ init_dcli_config() {
 
     # Create directory structure
     mkdir -p "$config_dir"/{hosts,modules,scripts,state}
-    mkdir -p "$config_dir/hosts/shared"
 
     # Create config.yaml pointer file
     local hostname=$(hostname)
@@ -94,10 +93,6 @@ create_dcli_host_config() {
 
 host: $hostname
 description: BD-Configs desktop with DankMaterialShell
-
-# Import shared configurations
-import:
-  - hosts/shared/common.yaml
 
 # Enable compositor modules
 enabled_modules:
@@ -326,29 +321,7 @@ EOF
     log_success "Niri module created"
 }
 
-# Create shared common configuration
-create_common_config() {
-    local user_name="$1"
-    local config_dir="/home/$user_name/.config/arch-config"
-    local common_file="$config_dir/hosts/shared/common.yaml"
 
-    log_info "Creating shared common configuration..."
-
-    cat > "$common_file" << 'EOF'
-# Shared configuration for all BD-Configs hosts
-# Add packages or settings that should be common across all machines
-
-packages: []
-
-# Common services (add as needed)
-# services:
-#   enabled:
-#     - bluetooth
-#   disabled: []
-EOF
-
-    log_success "Common configuration created"
-}
 
 # Set proper ownership for dcli config
 fix_dcli_ownership() {
@@ -391,9 +364,6 @@ setup_dcli() {
     if [ "$install_niri" = "true" ]; then
         create_niri_module "$user_name" "$repo_dir"
     fi
-
-    # Create shared common config
-    create_common_config "$user_name"
 
     # Create host configuration
     create_dcli_host_config "$user_name" "$repo_dir" "$install_hyprland" "$install_niri" "${optional_apps[@]}"
