@@ -61,14 +61,29 @@ install_package_list() {
     # Install AUR packages with AUR helper
     if [ ${#aur_packages[@]} -gt 0 ]; then
         log_info "Installing AUR packages: ${aur_packages[*]}"
+        local failed_packages=()
         # Install AUR packages one by one to handle conflicts better
         for pkg in "${aur_packages[@]}"; do
             log_info "Installing AUR package: $pkg"
             yes | "${AUR_HELPER}" -S --needed "${pkg}"
             if [ $? -ne 0 ]; then
-                log_warn "Failed to install $pkg, continuing..."
+                log_warn "Failed to install $pkg"
+                failed_packages+=("$pkg")
+            else
+                log_success "$pkg installed"
             fi
         done
+
+        if [ ${#failed_packages[@]} -gt 0 ]; then
+            echo ""
+            log_error "Some AUR packages failed to install:"
+            for pkg in "${failed_packages[@]}"; do
+                echo "  ✗ $pkg"
+            done
+            echo ""
+            log_warn "Installation continuing, but some features may not work"
+            echo ""
+        fi
     fi
 
     log_success "$description installed successfully"

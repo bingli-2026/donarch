@@ -55,27 +55,39 @@ EOF
 select_compositors() {
     log_step "Compositor Selection"
 
-    # Use dialog for selection
-    local choices=$(dialog --stdout --checklist "Select compositor(s) to install:" 15 50 3 \
-        1 "Hyprland" on \
-        2 "Niri" off \
-        3 "Both" off)
+    echo "Which compositor(s) would you like to install?"
+    echo ""
+    echo "1) Hyprland only"
+    echo "2) Niri only"
+    echo "3) Both Hyprland and Niri"
+    echo ""
 
-    if [ -z "$choices" ]; then
-        log_error "No compositor selected"
-        exit 1
-    fi
-
-    # Parse selections
-    for choice in $choices; do
+    local choice
+    while true; do
+        read -p "Enter your choice (1-3): " choice
         case $choice in
-            1) INSTALL_HYPRLAND=true ;;
-            2) INSTALL_NIRI=true ;;
-            3) INSTALL_HYPRLAND=true; INSTALL_NIRI=true ;;
+            1)
+                INSTALL_HYPRLAND=true
+                INSTALL_NIRI=false
+                break
+                ;;
+            2)
+                INSTALL_HYPRLAND=false
+                INSTALL_NIRI=true
+                break
+                ;;
+            3)
+                INSTALL_HYPRLAND=true
+                INSTALL_NIRI=true
+                break
+                ;;
+            *)
+                log_error "Invalid choice. Please enter 1, 2, or 3."
+                ;;
         esac
     done
 
-    clear
+    echo ""
     log_info "Selected compositors:"
     [ "$INSTALL_HYPRLAND" = true ] && echo "  • Hyprland"
     [ "$INSTALL_NIRI" = true ] && echo "  • Niri"
@@ -86,11 +98,14 @@ select_compositors() {
 select_optional_apps() {
     log_step "Optional Applications"
 
-    # Use dialog for selection
-    local choices=$(dialog --stdout --checklist "Select optional applications to install:" 15 60 3 \
-        1 "Zen Browser (privacy-focused browser)" off \
-        2 "Zed (modern code editor)" off \
-        3 "Helix (modal text editor)" off)
+    echo "Select optional applications to install (enter numbers separated by spaces, or press Enter to skip):"
+    echo ""
+    echo "1) Zen Browser (privacy-focused browser)"
+    echo "2) Zed (modern code editor)"
+    echo "3) Helix (modal text editor)"
+    echo ""
+
+    read -p "Enter your choices (e.g., '1 3' or just Enter to skip): " choices
 
     # Parse selections
     for choice in $choices; do
@@ -98,10 +113,11 @@ select_optional_apps() {
             1) OPTIONAL_APPS+=("zen-browser-bin") ;;
             2) OPTIONAL_APPS+=("zed") ;;
             3) OPTIONAL_APPS+=("helix") ;;
+            *) log_warn "Invalid choice '$choice' ignored" ;;
         esac
     done
 
-    clear
+    echo ""
     if [ ${#OPTIONAL_APPS[@]} -gt 0 ]; then
         log_info "Selected optional applications:"
         for app in "${OPTIONAL_APPS[@]}"; do
