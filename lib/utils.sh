@@ -115,14 +115,14 @@ print_banner() {
     clear
     echo -e "${PURPLE}"
     cat << 'EOF'
-    ╔══════════════════════════════════════════════╗
-    ║                                              ║
-    ║           BD-CONFIGS INSTALLER               ║
-    ║                                              ║
-    ║    Beautiful Dots for Hyprland & Niri       ║
-    ║         with DankMaterialShell               ║
-    ║                                              ║
-    ╚══════════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗
+║                                              ║
+║           BD-CONFIGS INSTALLER               ║
+║                                              ║
+║    Beautiful Dots for Hyprland & Niri        ║
+║         with DankMaterialShell               ║
+║                                              ║
+╚══════════════════════════════════════════════╝
 EOF
     echo -e "${NC}"
     echo ""
