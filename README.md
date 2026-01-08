@@ -36,7 +36,6 @@ If you enjoy what I do, consider supporting me on Ko-fi! Every little bit means 
 ```bash
 git clone https://gitlab.com/theblackdon/bd-configs.git
 cd bd-configs
-chmod +x install.sh
 ./install.sh
 ```
 
