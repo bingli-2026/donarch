@@ -287,7 +287,6 @@ packages:
   - brightnessctl
   - pavucontrol
   - network-manager-applet
-  - pyprland
 EOF
 
     log_success "Hyprland module created"

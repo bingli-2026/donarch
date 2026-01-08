@@ -10,4 +10,3 @@ nwg-displays
 brightnessctl
 pavucontrol
 network-manager-applet
-pyprland
