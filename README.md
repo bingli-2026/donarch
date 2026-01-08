@@ -28,7 +28,7 @@ A complete, ready-to-use desktop environment configuration for Arch Linux featur
 ### Quick Install
 
 ```bash
-git clone https://gitlab.com/yourusername/bd-configs.git
+git clone https://gitlab.com/theblackdon/bd-configs.git
 cd bd-configs
 chmod +x install.sh
 ./install.sh
