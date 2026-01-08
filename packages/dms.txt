@@ -1,0 +1,4 @@
+dms-shell-git
+quickshell
+greetd
+greetd-dms-greeter-git
