@@ -1,5 +1,5 @@
-# DonArch
-
+# DonArch TheBlackDon's Dotfiles
+ 
 **Don's Arch Configurations** for Hyprland & Niri with DankMaterialShell
 
 A complete, ready-to-use desktop environment configuration for Arch Linux featuring modern Wayland compositors with Catppuccin Design aesthetics.
