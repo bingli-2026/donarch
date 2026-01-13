@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Dotfiles deployment functions for bd-configs installer
+# Dotfiles deployment functions for donarch installer
 
 # Source utils for logging
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -32,8 +32,8 @@ deploy_assets() {
     log_info "Deploying assets..."
 
     if [ -d "$repo_dir/assets" ]; then
-        create_symlink "$repo_dir/assets" "$config_dir/bd-configs/assets"
-        log_success "Assets linked to $config_dir/bd-configs/assets"
+        create_symlink "$repo_dir/assets" "$config_dir/donarch/assets"
+        log_success "Assets linked to $config_dir/donarch/assets"
     fi
 }
 
@@ -164,8 +164,8 @@ merge_dms_configs() {
     # Merge JSON files with jq and replace hardcoded paths
     jq -s '.[0] * .[1]' "$base_settings" "$compositor_settings" | \
         sed "s|\$HOME|$user_home|g" | \
-        sed "s|/home/don/bd-configs/assets|$config_dir/bd-configs/assets|g" | \
-        sed "s|/home/don/.config/arch-config/modules/bdots-hypr|$config_dir/bd-configs/assets|g" \
+        sed "s|/home/don/bd-configs/assets|$config_dir/donarch/assets|g" | \
+        sed "s|/home/don/.config/arch-config/modules/bdots-hypr|$config_dir/donarch/assets|g" \
         > "$dms_dir/settings.json"
 
     # Copy other DMS files from compositor-specific directory

@@ -1,6 +1,6 @@
-# BD-Configs
+# DonArch
 
-**Black Don's Dots** for Hyprland & Niri with DankMaterialShell
+**Don's Arch Configurations** for Hyprland & Niri with DankMaterialShell
 
 A complete, ready-to-use desktop environment configuration for Arch Linux featuring modern Wayland compositors with Catppuccin Design aesthetics.
 
@@ -20,8 +20,8 @@ If you enjoy what I do, consider supporting me on Ko-fi! Every little bit means 
 
 ## Screenshots
 
-![BD-Configs Desktop](assets/screenshots/desktop-overview.png)
-*BD-Configs running with Niri, DankMaterialShell, and Catppuccin Mocha theme*
+![DonArch Desktop](assets/screenshots/desktop-overview.png)
+*DonArch running with Niri, DankMaterialShell, and Catppuccin Mocha theme*
 
 ## Requirements
 
@@ -34,8 +34,8 @@ If you enjoy what I do, consider supporting me on Ko-fi! Every little bit means 
 ### Quick Install
 
 ```bash
-git clone https://gitlab.com/theblackdon/bd-configs.git
-cd bd-configs
+git clone https://gitlab.com/theblackdon/donarch.git
+cd donarch
 ./install.sh
 ```
 
@@ -115,7 +115,7 @@ The installer will guide you through:
 
 ## dcli Integration (Optional)
 
-BD-Configs supports optional integration with **dcli** - a declarative package management tool for Arch Linux inspired by NixOS.
+DonArch supports optional integration with **dcli** - a declarative package management tool for Arch Linux inspired by NixOS.
 
 ### What is dcli?
 
@@ -131,7 +131,7 @@ dcli allows you to:
 If you choose to install dcli during setup, the installer will:
 1. Install `dcli-arch-git` from AUR
 2. Create a dcli configuration structure at `~/.config/arch-config`
-3. Generate modules for all BD-Configs packages:
+3. Generate modules for all DonArch packages:
    - `base` - Core dependencies
    - `themes` - Catppuccin Mocha theme packages
    - `dms` - DankMaterialShell packages
@@ -186,7 +186,7 @@ For more information, visit the [dcli repository](https://gitlab.com/theblackdon
 All configuration files are symlinked from the repository, making customization easy:
 
 ```bash
-cd bd-configs
+cd donarch
 
 # Edit compositor configs
 nano configs/hyprland/hypr/hyprland.conf
@@ -258,7 +258,7 @@ journalctl --user -xe
 
 ## Uninstallation
 
-To remove bd-configs and restore your system:
+To remove donarch and restore your system:
 
 ```bash
 # Stop and disable greetd
@@ -281,7 +281,7 @@ sudo pacman -R hyprland niri dms-shell-git greetd-dms-greeter-git
 ## Directory Structure
 
 ```
-bd-configs/
+donarch/
 ├── install.sh              # Main installer script
 ├── README.md               # This file
 ├── lib/                    # Installer library functions

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# BD-Configs Installer
-# Beautiful Dots for Hyprland & Niri with DankMaterialShell
+# DonArch Installer
+# Don's Arch Configurations for Hyprland & Niri with DankMaterialShell
 
 set -euo pipefail
 
@@ -201,7 +201,7 @@ post_install() {
         echo ""
     fi
 
-    echo -e "${YELLOW}Tip:${NC} Keep the bd-configs directory to easily update configs!"
+    echo -e "${YELLOW}Tip:${NC} Keep the donarch directory to easily update configs!"
     echo ""
     print_separator
     echo ""

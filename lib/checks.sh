@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# System checks for bd-configs installer
+# System checks for donarch installer
 
 # Source utils for logging
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

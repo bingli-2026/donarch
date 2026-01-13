@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DMS-greeter (greetd) setup functions for bd-configs installer
+# DMS-greeter (greetd) setup functions for donarch installer
 # Adapted from enable-dms-greeter.sh
 
 # Source utils for logging
