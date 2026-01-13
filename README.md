@@ -1,4 +1,4 @@
-# DonArch TheBlackDon's Dotfiles
+# donarch TheBlackDon's Dotfiles
  
 **Don's Arch Configurations** for Hyprland & Niri with DankMaterialShell
 
