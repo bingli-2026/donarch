@@ -50,12 +50,29 @@ deploy_shared_configs() {
         "fish"
         "gtk-3.0"
         "gtk-4.0"
+        "noctalia"
+        "shell-switch"
     )
 
     for config in "${shared_configs[@]}"; do
         if [ -d "$repo_dir/configs/shared/$config" ]; then
-            log_info "Linking $config..."
-            create_symlink "$repo_dir/configs/shared/$config" "$config_dir/$config"
+            if [ "$config" = "shell-switch" ]; then
+                log_info "Linking $config..."
+                create_symlink "$repo_dir/configs/shared/$config" "$config_dir/$config"
+
+                # Ensure shell-switch binary is available in PATH
+                if [ -f "$repo_dir/configs/shared/$config/shell-switch" ]; then
+                    chmod +x "$repo_dir/configs/shared/$config/shell-switch" 2>/dev/null || true
+                    mkdir -p "$user_home/.local/bin"
+                    ln -sf "$repo_dir/configs/shared/$config/shell-switch" "$user_home/.local/bin/shell-switch"
+                    log_success "shell-switch linked to $user_home/.local/bin/shell-switch"
+                else
+                    log_warn "shell-switch executable not found in shared config; skipping ~/.local/bin link"
+                fi
+            else
+                log_info "Linking $config..."
+                create_symlink "$repo_dir/configs/shared/$config" "$config_dir/$config"
+            fi
         fi
     done
 
