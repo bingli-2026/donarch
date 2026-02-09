@@ -65,7 +65,7 @@ install_package_list() {
         # Install AUR packages one by one to handle conflicts better
         for pkg in "${aur_packages[@]}"; do
             log_info "Installing AUR package: $pkg"
-            yes | "${AUR_HELPER}" -S --needed "${pkg}"
+            "${AUR_HELPER}" -S --needed --noconfirm "${pkg}"
             if [ $? -ne 0 ]; then
                 log_warn "Failed to install $pkg"
                 failed_packages+=("$pkg")
@@ -142,13 +142,13 @@ install_shell_packages() {
     # Install the selected shell
     if [ "$selected_shell" = "noctalia" ]; then
         log_info "Installing Noctalia Shell..."
-        if ! yes | "${AUR_HELPER}" -S --needed "noctalia-shell-git"; then
-            log_warn "Failed to install noctalia-shell-git from AUR"
+        if ! "${AUR_HELPER}" -S --needed --noconfirm "noctalia-shell"; then
+            log_warn "Failed to install noctalia-shell from AUR"
             return 1
         fi
     elif [ "$selected_shell" = "dms" ]; then
         log_info "Installing Dank Material Shell (DMS)..."
-        if ! yes | "${AUR_HELPER}" -S --needed "dms-shell-git"; then
+        if ! "${AUR_HELPER}" -S --needed --noconfirm "dms-shell-git"; then
             log_warn "Failed to install dms-shell-git from AUR"
             return 1
         fi

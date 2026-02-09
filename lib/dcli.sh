@@ -204,7 +204,7 @@ packages:
   - tela-icon-theme-purple-git
   - bibata-cursor-theme-bin
   - kvantum-theme-catppuccin-git
-  - matugen-bin
+  - matugen
 EOF
 
     log_success "Themes module created"
@@ -225,7 +225,7 @@ create_shell_module() {
 description: Noctalia Shell with greetd
 
 packages:
-  - noctalia-shell-git
+  - noctalia-shell
   - quickshell
   - greetd
 EOF
