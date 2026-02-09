@@ -20,6 +20,7 @@ source "$REPO_DIR/lib/dcli.sh"
 INSTALL_HYPRLAND=false
 INSTALL_NIRI=false
 INSTALL_DCLI=false
+SELECTED_SHELL="noctalia"  # Default to noctalia
 OPTIONAL_APPS=()
 
 # Display welcome screen
@@ -30,15 +31,16 @@ show_welcome() {
 This installer will set up Beautiful Dots configurations for:
   • Hyprland - Dynamic tiling Wayland compositor
   • Niri - Scrollable-tiling Wayland compositor
-  • DankMaterialShell (DMS) - Modern shell with Material Design
+  • Desktop Shell - Choose between Noctalia (recommended) or DMS
   • Catppuccin Mocha theme across all applications
 
 The installer will:
   1. Check your system requirements
   2. Let you choose which compositor(s) to install
-  3. Install required packages and optional applications
-  4. Deploy configuration files (via symlinks)
-  5. Apply themes and set up DMS-greeter display manager
+  3. Let you choose your preferred desktop shell (Noctalia or DMS)
+  4. Install required packages and optional applications
+  5. Deploy configuration files (via symlinks)
+  6. Apply themes and set up the display manager
 
 Your existing .config will be backed up before any changes.
 
@@ -91,6 +93,45 @@ select_compositors() {
     log_info "Selected compositors:"
     [ "$INSTALL_HYPRLAND" = true ] && echo "  • Hyprland"
     [ "$INSTALL_NIRI" = true ] && echo "  • Niri"
+    echo ""
+}
+
+# User selection menu for shell (noctalia or dms)
+select_shell() {
+    log_step "Desktop Shell Selection"
+
+    echo "Which desktop shell would you like to use?"
+    echo ""
+    echo "1) Noctalia Shell (Recommended) - Lightweight, stable, Material Design"
+    echo "2) Dank Material Shell (DMS) - Feature-rich, some users report install issues"
+    echo ""
+
+    local choice
+    while true; do
+        read -p "Enter your choice (1-2) [default: 1]: " choice
+        # Default to 1 if empty
+        choice=${choice:-1}
+        case $choice in
+            1)
+                SELECTED_SHELL="noctalia"
+                break
+                ;;
+            2)
+                SELECTED_SHELL="dms"
+                break
+                ;;
+            *)
+                log_error "Invalid choice. Please enter 1 or 2."
+                ;;
+        esac
+    done
+
+    echo ""
+    if [ "$SELECTED_SHELL" = "noctalia" ]; then
+        log_info "Selected shell: Noctalia Shell"
+    else
+        log_info "Selected shell: Dank Material Shell (DMS)"
+    fi
     echo ""
 }
 
@@ -176,14 +217,18 @@ post_install() {
     log_success "Installation Complete!"
     echo ""
     echo -e "${CYAN}Next Steps:${NC}"
-    echo "  1. Reboot your system to activate DMS-greeter"
+    echo "  1. Reboot your system to activate the display manager"
     echo "  2. At the login screen, select your preferred session:"
-    [ "$INSTALL_HYPRLAND" = true ] && echo "     • Hyprland (DMS)"
-    [ "$INSTALL_NIRI" = true ] && echo "     • Niri (DMS)"
+    [ "$INSTALL_HYPRLAND" = true ] && echo "     • Hyprland"
+    [ "$INSTALL_NIRI" = true ] && echo "     • Niri"
     echo "  3. Log in and enjoy your beautiful desktop!"
     echo ""
     echo -e "${CYAN}Key Bindings:${NC}"
-    echo "  • Super+Space    - Application launcher (DMS)"
+    if [ "$SELECTED_SHELL" = "noctalia" ]; then
+        echo "  • Super+Space    - Application launcher (Noctalia)"
+    else
+        echo "  • Super+Space    - Application launcher (DMS)"
+    fi
     echo "  • Super+T        - Terminal (kitty)"
     echo "  • Super+Q        - Close window"
     echo "  • Super+F        - File manager (nemo)"
@@ -225,6 +270,7 @@ main() {
 
     # User selections
     select_compositors
+    select_shell
     select_optional_apps
     select_dcli
 
@@ -235,7 +281,7 @@ main() {
     install_core_packages "$REPO_DIR" || die "Failed to install core packages"
     install_compositor_packages "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" || die "Failed to install compositor packages"
     install_theme_packages "$REPO_DIR" || die "Failed to install theme packages"
-    install_dms_packages "$REPO_DIR" || die "Failed to install DMS packages"
+    install_shell_packages "$REPO_DIR" "$SELECTED_SHELL" || die "Failed to install shell packages"
     install_required_apps "$REPO_DIR" || die "Failed to install required applications"
 
     if [ ${#OPTIONAL_APPS[@]} -gt 0 ]; then
@@ -243,17 +289,17 @@ main() {
     fi
 
     # Deploy configurations
-    deploy_configurations "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" || die "Failed to deploy configurations"
+    deploy_configurations "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" "$SELECTED_SHELL" || die "Failed to deploy configurations"
 
     # Apply themes
     apply_themes "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" || die "Failed to apply themes"
 
     # Setup greeter
-    setup_greeter "$INSTALL_HYPRLAND" "$INSTALL_NIRI" || die "Failed to setup greeter"
+    setup_greeter "$INSTALL_HYPRLAND" "$INSTALL_NIRI" "$SELECTED_SHELL" || die "Failed to setup greeter"
 
     # Setup dcli if selected
     if [ "$INSTALL_DCLI" = true ]; then
-        setup_dcli "$(detect_user)" "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" "${OPTIONAL_APPS[@]}" || log_warn "dcli setup failed, but continuing with installation"
+        setup_dcli "$(detect_user)" "$REPO_DIR" "$INSTALL_HYPRLAND" "$INSTALL_NIRI" "$SELECTED_SHELL" "${OPTIONAL_APPS[@]}" || log_warn "dcli setup failed, but continuing with installation"
     fi
 
     # Post-installation

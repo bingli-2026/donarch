@@ -121,11 +121,44 @@ install_theme_packages() {
     install_package_list "$repo_dir/packages/themes.txt" "Themes"
 }
 
-# Install DMS packages
+# Install DMS packages (legacy - installs both shells)
 install_dms_packages() {
     local repo_dir="$1"
     log_step "Installing DankMaterialShell"
     install_package_list "$repo_dir/packages/dms.txt" "DMS and Display Manager"
+}
+
+# Install selected shell packages (noctalia or dms)
+install_shell_packages() {
+    local repo_dir="$1"
+    local selected_shell="$2"
+
+    log_step "Installing Desktop Shell"
+
+    # Always install quickshell and greetd (common dependencies)
+    log_info "Installing display manager dependencies..."
+    sudo pacman -S --needed --noconfirm greetd quickshell 2>/dev/null || true
+
+    # Install the selected shell
+    if [ "$selected_shell" = "noctalia" ]; then
+        log_info "Installing Noctalia Shell..."
+        if ! yes | "${AUR_HELPER}" -S --needed "noctalia-shell-git"; then
+            log_warn "Failed to install noctalia-shell-git from AUR"
+            return 1
+        fi
+    elif [ "$selected_shell" = "dms" ]; then
+        log_info "Installing Dank Material Shell (DMS)..."
+        if ! yes | "${AUR_HELPER}" -S --needed "dms-shell-git"; then
+            log_warn "Failed to install dms-shell-git from AUR"
+            return 1
+        fi
+    else
+        log_error "Unknown shell selection: $selected_shell"
+        return 1
+    fi
+
+    log_success "Desktop shell installed successfully"
+    return 0
 }
 
 # Install required apps

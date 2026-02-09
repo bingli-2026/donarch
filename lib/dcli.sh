@@ -210,16 +210,28 @@ EOF
     log_success "Themes module created"
 }
 
-# Create dcli DMS module
-create_dms_module() {
+# Create dcli shell module (noctalia or dms)
+create_shell_module() {
     local user_name="$1"
     local repo_dir="$2"
+    local selected_shell="${3:-noctalia}"
     local config_dir="/home/$user_name/.config/arch-config"
     local module_file="$config_dir/modules/dms.yaml"
 
-    log_info "Creating DMS module..."
+    if [ "$selected_shell" = "noctalia" ]; then
+        log_info "Creating Noctalia shell module..."
+        cat > "$module_file" << 'EOF'
+# Noctalia Shell and display manager
+description: Noctalia Shell with greetd
 
-    cat > "$module_file" << 'EOF'
+packages:
+  - noctalia-shell-git
+  - quickshell
+  - greetd
+EOF
+    else
+        log_info "Creating DMS module..."
+        cat > "$module_file" << 'EOF'
 # DankMaterialShell and display manager
 description: DankMaterialShell with DMS-greeter
 
@@ -229,8 +241,9 @@ packages:
   - greetd
   - greetd-dms-greeter-git
 EOF
+    fi
 
-    log_success "DMS module created"
+    log_success "Shell module created"
 }
 
 # Create dcli apps module
@@ -339,7 +352,8 @@ setup_dcli() {
     local repo_dir="$2"
     local install_hyprland="$3"
     local install_niri="$4"
-    shift 4
+    local selected_shell="${5:-noctalia}"
+    shift 5
     local optional_apps=("$@")
 
     log_step "Setting up dcli"
@@ -353,7 +367,7 @@ setup_dcli() {
     # Create all modules
     create_base_module "$user_name" "$repo_dir"
     create_themes_module "$user_name" "$repo_dir"
-    create_dms_module "$user_name" "$repo_dir"
+    create_shell_module "$user_name" "$repo_dir" "$selected_shell"
     create_apps_module "$user_name" "$repo_dir"
 
     # Create compositor modules based on selection

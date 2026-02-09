@@ -72,6 +72,7 @@ EOFGREETD
 create_session_files() {
     local install_hyprland="$1"
     local install_niri="$2"
+    local selected_shell="${3:-noctalia}"
 
     log_info "Creating Wayland session files..."
 
@@ -79,10 +80,12 @@ create_session_files() {
 
     # Create Hyprland session file
     if [ "$install_hyprland" = "true" ]; then
-        sudo tee /usr/share/wayland-sessions/hyprland-dms.desktop > /dev/null << 'EOFHYPR'
+        local shell_name="Noctalia"
+        [ "$selected_shell" = "dms" ] && shell_name="DMS"
+        sudo tee /usr/share/wayland-sessions/hyprland-dms.desktop > /dev/null << EOFHYPR
 [Desktop Entry]
-Name=Hyprland (DMS)
-Comment=Hyprland with DankMaterialShell
+Name=Hyprland (${shell_name})
+Comment=Hyprland with ${shell_name} shell
 Exec=Hyprland
 Type=Application
 EOFHYPR
@@ -91,10 +94,12 @@ EOFHYPR
 
     # Create Niri session file
     if [ "$install_niri" = "true" ]; then
-        sudo tee /usr/share/wayland-sessions/niri-dms.desktop > /dev/null << 'EOFNIRI'
+        local shell_name="Noctalia"
+        [ "$selected_shell" = "dms" ] && shell_name="DMS"
+        sudo tee /usr/share/wayland-sessions/niri-dms.desktop > /dev/null << EOFNIRI
 [Desktop Entry]
-Name=Niri (DMS)
-Comment=Niri with DankMaterialShell
+Name=Niri (${shell_name})
+Comment=Niri with ${shell_name} shell
 Exec=niri-session
 Type=Application
 EOFNIRI
@@ -106,8 +111,9 @@ EOFNIRI
 setup_greeter() {
     local install_hyprland="$1"
     local install_niri="$2"
+    local selected_shell="${3:-noctalia}"
 
-    log_step "Setting Up DMS-Greeter Display Manager"
+    log_step "Setting Up Display Manager"
 
     log_info "This step requires sudo privileges to configure the display manager"
     echo ""
@@ -115,14 +121,16 @@ setup_greeter() {
     disable_other_display_managers
     enable_greetd
     configure_greetd "$install_hyprland" "$install_niri"
-    create_session_files "$install_hyprland" "$install_niri"
+    create_session_files "$install_hyprland" "$install_niri" "$selected_shell"
 
     echo ""
-    log_success "DMS-Greeter setup complete!"
+    log_success "Display manager setup complete!"
     echo ""
     log_info "Session selection:"
-    [ "$install_hyprland" = "true" ] && echo "  • Hyprland (DMS) - Available at login"
-    [ "$install_niri" = "true" ] && echo "  • Niri (DMS) - Available at login"
+    local shell_name="Noctalia"
+    [ "$selected_shell" = "dms" ] && shell_name="DMS"
+    [ "$install_hyprland" = "true" ] && echo "  • Hyprland (${shell_name}) - Available at login"
+    [ "$install_niri" = "true" ] && echo "  • Niri (${shell_name}) - Available at login"
     echo ""
     log_warn "You will need to reboot to use the new display manager"
 }

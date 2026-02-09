@@ -147,9 +147,16 @@ deploy_niri_configs() {
 merge_dms_configs() {
     local repo_dir="$1"
     local compositor="$2"  # "hyprland" or "niri"
+    local selected_shell="${3:-dms}"  # "noctalia" or "dms"
     local user_home=$(get_user_home)
     local config_dir="$user_home/.config"
     local dms_dir="$config_dir/DankMaterialShell"
+
+    # Skip DMS config if noctalia is selected
+    if [ "$selected_shell" = "noctalia" ]; then
+        log_info "Noctalia selected - skipping DMS configuration"
+        return 0
+    fi
 
     log_info "Merging DMS configurations for $compositor..."
 
@@ -202,11 +209,100 @@ merge_dms_configs() {
     log_success "DMS configurations merged"
 }
 
+# Configure shell startup for compositors
+configure_shell_startup() {
+    local repo_dir="$1"
+    local compositor="$2"  # "hyprland" or "niri"
+    local selected_shell="${3:-noctalia}"
+    local user_home=$(get_user_home)
+    local config_dir="$user_home/.config"
+
+    log_info "Configuring $compositor startup for $selected_shell shell..."
+
+    local shell_name
+    local launch_cmd
+    local launcher_cmd
+
+    if [ "$selected_shell" = "noctalia" ]; then
+        shell_name="Noctalia Shell"
+        launch_cmd="qs -c noctalia-shell"
+        launcher_cmd="qs -c noctalia-shell ipc call launcher toggle"
+    else
+        shell_name="Dank Material Shell"
+        launch_cmd="dms run"
+        launcher_cmd="dms ipc call spotlight toggle"
+    fi
+
+    if [ "$compositor" = "hyprland" ]; then
+        # Create hyprland shell startup config
+        local hypr_config_dir="$config_dir/hypr"
+        mkdir -p "$hypr_config_dir"
+
+        # Generate shell-start.conf
+        cat > "$hypr_config_dir/shell-start.conf" << EOF
+# Shell Switcher - Startup Configuration
+# This file is managed by shell-switch - manual edits will be overwritten
+# Current shell: ${shell_name}
+
+exec-once = ${launch_cmd}
+EOF
+
+        # Generate shell-binds.conf
+        cat > "$hypr_config_dir/shell-binds.conf" << EOF
+# Shell Switcher - Keybindings
+# This file is managed by shell-switch - manual edits will be overwritten
+# Current shell: ${shell_name}
+
+# Application launcher
+bind = SUPER, Space, exec, ${launcher_cmd}
+EOF
+
+        log_success "Hyprland shell configuration created"
+
+    elif [ "$compositor" = "niri" ]; then
+        # Create niri shell startup config
+        local niri_config_dir="$config_dir/niri"
+        mkdir -p "$niri_config_dir"
+
+        # Format command as quoted arguments for KDL
+        local launch_cmd_args
+        launch_cmd_args=$(echo "$launch_cmd" | awk '{for(i=1;i<=NF;i++) printf "\"%s\" ", $i}' | sed 's/ $//')
+
+        local launcher_cmd_args
+        launcher_cmd_args=$(echo "$launcher_cmd" | awk '{for(i=1;i<=NF;i++) printf "\"%s\" ", $i}' | sed 's/ $//')
+
+        # Generate shell-switcher-startup.kdl
+        cat > "$niri_config_dir/shell-switcher-startup.kdl" << EOF
+// Shell Switcher - Startup Configuration
+// This file is managed by shell-switch - manual edits will be overwritten
+// Current shell: ${shell_name}
+
+spawn-at-startup ${launch_cmd_args}
+EOF
+
+        # Generate shell-switcher-binds.kdl
+        cat > "$niri_config_dir/shell-switcher-binds.kdl" << EOF
+// Shell Switcher - Keybindings
+// This file is managed by shell-switch - manual edits will be overwritten
+// Current shell: ${shell_name}
+
+// Application launcher
+Mod+Space {
+    spawn ${launcher_cmd_args}
+    hotkey-overlay-title = "Launcher"
+}
+EOF
+
+        log_success "Niri shell configuration created"
+    fi
+}
+
 # Main deployment function
 deploy_configurations() {
     local repo_dir="$1"
     local install_hyprland="$2"
     local install_niri="$3"
+    local selected_shell="${4:-noctalia}"
 
     log_step "Deploying Configurations"
 
@@ -219,15 +315,17 @@ deploy_configurations() {
     # Deploy compositor-specific configs
     if [ "$install_hyprland" = "true" ]; then
         deploy_hyprland_configs "$repo_dir"
-        merge_dms_configs "$repo_dir" "hyprland"
+        configure_shell_startup "$repo_dir" "hyprland" "$selected_shell"
+        merge_dms_configs "$repo_dir" "hyprland" "$selected_shell"
     fi
 
     if [ "$install_niri" = "true" ]; then
         deploy_niri_configs "$repo_dir"
+        configure_shell_startup "$repo_dir" "niri" "$selected_shell"
         # If both are installed and we already merged for hyprland, skip niri merge
         # Or we could merge both - for now, prefer the first one selected
         if [ "$install_hyprland" != "true" ]; then
-            merge_dms_configs "$repo_dir" "niri"
+            merge_dms_configs "$repo_dir" "niri" "$selected_shell"
         fi
     fi
 
