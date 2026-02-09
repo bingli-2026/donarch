@@ -135,9 +135,9 @@ install_shell_packages() {
 
     log_step "Installing Desktop Shell"
 
-    # Always install quickshell and greetd (common dependencies)
+    # Always install quickshell and ly (common dependencies)
     log_info "Installing display manager dependencies..."
-    sudo pacman -S --needed --noconfirm greetd quickshell 2>/dev/null || true
+    sudo pacman -S --needed --noconfirm ly quickshell 2>/dev/null || true
 
     # Install the selected shell
     if [ "$selected_shell" = "noctalia" ]; then

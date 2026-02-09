@@ -1,5 +1,4 @@
 dms-shell-git
 noctalia-shell
 quickshell
-greetd
-greetd-dms-greeter-git
+ly

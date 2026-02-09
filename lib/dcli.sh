@@ -222,24 +222,23 @@ create_shell_module() {
         log_info "Creating Noctalia shell module..."
         cat > "$module_file" << 'EOF'
 # Noctalia Shell and display manager
-description: Noctalia Shell with greetd
+description: Noctalia Shell with ly
 
 packages:
   - noctalia-shell
   - quickshell
-  - greetd
+  - ly
 EOF
     else
         log_info "Creating DMS module..."
         cat > "$module_file" << 'EOF'
 # DankMaterialShell and display manager
-description: DankMaterialShell with DMS-greeter
+description: DankMaterialShell with ly
 
 packages:
   - dms-shell-git
   - quickshell
-  - greetd
-  - greetd-dms-greeter-git
+  - ly
 EOF
     fi
 
