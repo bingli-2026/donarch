@@ -29,14 +29,13 @@ show_welcome() {
 
     cat << 'EOF'
 This installer will set up Beautiful Dots configurations for:
-  • Hyprland - Dynamic tiling Wayland compositor
   • Niri - Scrollable-tiling Wayland compositor
   • Desktop Shell - Choose between Noctalia (recommended) or DMS
   • Catppuccin Mocha theme across all applications
 
 The installer will:
   1. Check your system requirements
-  2. Let you choose which compositor(s) to install
+  2. Install the Niri compositor and desktop shell
   3. Let you choose your preferred desktop shell (Noctalia or DMS)
   4. Install required packages and optional applications
   5. Deploy configuration files (via symlinks)
@@ -57,42 +56,15 @@ EOF
 select_compositors() {
     log_step "Compositor Selection"
 
-    echo "Which compositor(s) would you like to install?"
-    echo ""
-    echo "1) Hyprland only"
-    echo "2) Niri only"
-    echo "3) Both Hyprland and Niri"
+    # Hyprland temporarily disabled - only Niri available
+    log_info "Hyprland configuration is currently being reworked."
+    log_info "Only Niri is available for installation at this time."
     echo ""
 
-    local choice
-    while true; do
-        read -p "Enter your choice (1-3): " choice
-        case $choice in
-            1)
-                INSTALL_HYPRLAND=true
-                INSTALL_NIRI=false
-                break
-                ;;
-            2)
-                INSTALL_HYPRLAND=false
-                INSTALL_NIRI=true
-                break
-                ;;
-            3)
-                INSTALL_HYPRLAND=true
-                INSTALL_NIRI=true
-                break
-                ;;
-            *)
-                log_error "Invalid choice. Please enter 1, 2, or 3."
-                ;;
-        esac
-    done
+    INSTALL_HYPRLAND=false
+    INSTALL_NIRI=true
 
-    echo ""
-    log_info "Selected compositors:"
-    [ "$INSTALL_HYPRLAND" = true ] && echo "  • Hyprland"
-    [ "$INSTALL_NIRI" = true ] && echo "  • Niri"
+    log_info "Selected compositor: Niri"
     echo ""
 }
 
@@ -219,8 +191,7 @@ post_install() {
     echo -e "${CYAN}Next Steps:${NC}"
     echo "  1. Reboot your system to activate the display manager"
     echo "  2. At the login screen, select your preferred session:"
-    [ "$INSTALL_HYPRLAND" = true ] && echo "     • Hyprland"
-    [ "$INSTALL_NIRI" = true ] && echo "     • Niri"
+    echo "     • Niri"
     echo "  3. Log in and enjoy your beautiful desktop!"
     echo ""
     echo -e "${CYAN}Key Bindings:${NC}"

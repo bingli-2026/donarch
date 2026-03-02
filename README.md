@@ -1,6 +1,8 @@
 # donarch TheBlackDon's Dotfiles
- 
-**Don's Arch Configurations** for Hyprland & Niri with DankMaterialShell
+
+> ⚠️ **Temporary Notice:** Hyprland configuration is currently unavailable while being updated. Only **Niri** is available for installation at this time. Hyprland support will return once the configuration update is complete.
+
+**Don's Arch Configurations** for Niri with DankMaterialShell
 
 A complete, ready-to-use desktop environment configuration for Arch Linux featuring modern Wayland compositors with Catppuccin Design aesthetics.
 
@@ -10,7 +12,7 @@ If you enjoy what I do, consider supporting me on Ko-fi! Every little bit means 
 
 ## Features
 
-- **Dual Compositor Support**: Choose between Hyprland (dynamic tiling) or Niri (scrollable tiling), or install both
+- **Niri Compositor**: Scrollable-tiling Wayland compositor (Hyprland temporarily unavailable)
 - **DankMaterialShell (DMS)**: Beautiful Material Design shell with bar, notifications, launcher, and lock screen
 - **Catppuccin Mocha Theme**: Consistent theming across all applications (GTK, Qt, terminal, shell)
 - **DMS-Greeter**: Elegant display manager for seamless session switching
@@ -41,7 +43,7 @@ cd donarch
 
 The installer will guide you through:
 1. System compatibility checks
-2. Compositor selection (Hyprland, Niri, or both)
+2. Niri compositor installation
 3. Optional application selection
 4. dcli integration (optional)
 5. Package installation
@@ -56,8 +58,7 @@ The installer will guide you through:
 - jq and dialog for the installer
 
 **Compositor Packages:**
-- Hyprland: hyprland, hypridle, xdg-desktop-portals, screenshot tools, pyprland
-- Niri: niri, waybar, mako, fuzzel, swayidle, screenshot tools
+- Niri: niri, waybar, mako, fuzzel, swayidle, screenshot tools (Hyprland temporarily unavailable)
 
 **Theme Packages:**
 - Catppuccin GTK theme (Mocha variant)
@@ -88,7 +89,7 @@ The installer will guide you through:
 
 1. **Reboot your system**
 2. **At the DMS-greeter login screen:**
-   - Select your preferred session (Hyprland or Niri)
+   - Select the Niri session
    - Log in with your credentials
 3. **Enjoy your beautiful desktop!**
 
@@ -136,8 +137,7 @@ If you choose to install dcli during setup, the installer will:
    - `themes` - Catppuccin Mocha theme packages
    - `dms` - DankMaterialShell packages
    - `apps` - Terminal, file manager, shell
-   - `hyprland` - Hyprland compositor (if selected)
-   - `niri` - Niri compositor (if selected)
+    - `niri` - Niri compositor
 4. Create a host configuration file with all installed packages declared
 
 ### Using dcli after installation
@@ -188,8 +188,7 @@ All configuration files are symlinked from the repository, making customization 
 ```bash
 cd donarch
 
-# Edit compositor configs
-nano configs/hyprland/hypr/hyprland.conf
+# Edit Niri config
 nano configs/niri/niri/config.kdl
 
 # Edit terminal config
@@ -246,9 +245,6 @@ dms run
 
 ### Compositor won't start
 ```bash
-# For Hyprland
-Hyprland
-
 # For Niri
 niri-session
 
@@ -269,13 +265,12 @@ rm -rf ~/.config
 mv ~/.config.backup-YYYYMMDD_HHMMSS ~/.config
 
 # Remove symlinks
-unlink ~/.config/hypr
 unlink ~/.config/niri
 unlink ~/.config/DankMaterialShell
 # ... etc
 
 # Optionally remove packages
-sudo pacman -R hyprland niri dms-shell-git greetd-dms-greeter-git
+sudo pacman -R niri dms-shell-git greetd-dms-greeter-git
 ```
 
 ## Directory Structure
@@ -292,8 +287,7 @@ donarch/
 │   ├── themes.sh          # Theme application
 │   └── greeter.sh         # Display manager setup
 ├── configs/               # Configuration files
-│   ├── shared/            # Shared between compositors
-│   ├── hyprland/          # Hyprland-specific
+│   ├── shared/            # Shared configurations
 │   └── niri/              # Niri-specific
 ├── packages/              # Package lists
 └── assets/                # Wallpapers and images
@@ -302,7 +296,6 @@ donarch/
 ## Credits
 
 - **[DankMaterialShell (DMS)](https://github.com/dburian/DankMaterialShell)** - Beautiful Material Design shell for Wayland
-- **[Hyprland](https://hyprland.org/)** - Dynamic tiling Wayland compositor
 - **[Niri](https://github.com/YaLTeR/niri)** - Scrollable-tiling Wayland compositor
 - **[Catppuccin](https://github.com/catppuccin/catppuccin)** - Soothing pastel theme
 - **[greetd](https://git.sr.ht/~kennylevinsen/greetd)** - Minimal display manager
