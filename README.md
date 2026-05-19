@@ -1,10 +1,8 @@
 # donarch TheBlackDon's Dotfiles
 
-> ⚠️ **Temporary Notice:** Hyprland configuration is currently unavailable while being updated. Only **Niri** is available for installation at this time. Hyprland support will return once the configuration update is complete.
+**Don's Arch Configurations** for Niri with Noctalia Shell
 
-**Don's Arch Configurations** for Niri with DankMaterialShell
-
-A complete, ready-to-use desktop environment configuration for Arch Linux featuring modern Wayland compositors with Catppuccin Design aesthetics.
+A complete, ready-to-use desktop environment configuration for Arch Linux featuring Niri + Noctalia with Catppuccin aesthetics.
 
 
 If you enjoy what I do, consider supporting me on Ko-fi! Every little bit means the world! https://ko-fi.com/theblackdon
@@ -12,10 +10,10 @@ If you enjoy what I do, consider supporting me on Ko-fi! Every little bit means 
 
 ## Features
 
-- **Niri Compositor**: Scrollable-tiling Wayland compositor (Hyprland temporarily unavailable)
-- **DankMaterialShell (DMS)**: Beautiful Material Design shell with bar, notifications, launcher, and lock screen
+- **Niri Compositor**: Scrollable-tiling Wayland compositor
+- **Noctalia Shell**: Launcher, bar, and desktop shell experience
 - **Catppuccin Mocha Theme**: Consistent theming across all applications (GTK, Qt, terminal, shell)
-- **DMS-Greeter**: Elegant display manager for seamless session switching
+- **ly Display Manager**: Lightweight TTY login manager
 - **Curated Applications**: kitty terminal, fish shell, nemo file manager, and optional apps
 - **Symlinked Configs**: Easy to update - edit files in the repo and changes apply immediately
 - **Optional dcli Integration**: Declarative package management for tracking your system configuration in YAML and git
@@ -23,7 +21,7 @@ If you enjoy what I do, consider supporting me on Ko-fi! Every little bit means 
 ## Screenshots
 
 ![DonArch Desktop](assets/screenshots/desktop-overview.png)
-*DonArch running with Niri, DankMaterialShell, and Catppuccin Mocha theme*
+*DonArch running with Niri, Noctalia, and Catppuccin Mocha theme*
 
 ## Requirements
 
@@ -58,7 +56,7 @@ The installer will guide you through:
 - jq and dialog for the installer
 
 **Compositor Packages:**
-- Niri: niri, waybar, mako, fuzzel, swayidle, screenshot tools (Hyprland temporarily unavailable)
+- Niri: niri, waybar, mako, fuzzel, swayidle, screenshot tools
 
 **Theme Packages:**
 - Catppuccin GTK theme (Mocha variant)
@@ -68,8 +66,8 @@ The installer will guide you through:
 - Kvantum theme engine
 
 **Desktop Shell & Display Manager:**
-- DankMaterialShell (dms-shell-git)
-- Quickshell (DMS dependency)
+- Noctalia Shell
+- Quickshell
 - ly
 
 **Required Applications:**
@@ -95,7 +93,7 @@ The installer will guide you through:
 
 ### Key Bindings
 
-#### Universal (Both Compositors)
+#### Niri
 - `Super + Space` - Application launcher
 - `Super + T` or `Super + Return` - Terminal (kitty)
 - `Super + Ctrl + Return` - Floating Terminal (kitty)
@@ -135,9 +133,9 @@ If you choose to install dcli during setup, the installer will:
 3. Generate modules for all DonArch packages:
    - `base` - Core dependencies
    - `themes` - Catppuccin Mocha theme packages
-   - `dms` - DankMaterialShell packages
+   - `shell` - Noctalia + display manager packages
    - `apps` - Terminal, file manager, shell
-    - `niri` - Niri compositor
+   - `niri` - Niri compositor
 4. Create a host configuration file with all installed packages declared
 
 ### Using dcli after installation
@@ -197,8 +195,8 @@ nano configs/shared/kitty/kitty.conf
 # Edit shell config
 nano configs/shared/fish/config.fish
 
-# Edit DMS settings
-nano configs/shared/DankMaterialShell/settings.json
+# Edit Noctalia settings
+nano configs/shared/noctalia/settings.json
 ```
 
 Changes take effect immediately (or after reloading the compositor with `Super+Shift+R`).
@@ -247,13 +245,13 @@ gsettings set org.gnome.desktop.interface icon-theme 'Tela-purple-dark'
 gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice'
 ```
 
-### DMS shell not starting
+### Noctalia shell not starting
 ```bash
-# Check if DMS is running
-pgrep -a dms
+# Check if Noctalia is running
+pgrep -a qs
 
-# Start DMS manually
-dms run
+# Start Noctalia manually
+qs -c noctalia-shell
 ```
 
 ### Compositor won't start
@@ -279,11 +277,11 @@ mv ~/.config.backup-YYYYMMDD_HHMMSS ~/.config
 
 # Remove symlinks
 unlink ~/.config/niri
-unlink ~/.config/DankMaterialShell
+unlink ~/.config/noctalia
 # ... etc
 
 # Optionally remove packages
-sudo pacman -R niri dms-shell-git greetd-dms-greeter-git
+sudo pacman -R niri ly quickshell
 ```
 
 ## Directory Structure
@@ -308,10 +306,10 @@ donarch/
 
 ## Credits
 
-- **[DankMaterialShell (DMS)](https://github.com/dburian/DankMaterialShell)** - Beautiful Material Design shell for Wayland
+- **[Noctalia Shell](https://github.com/noctalia-dev/noctalia-shell)** - Desktop shell
 - **[Niri](https://github.com/YaLTeR/niri)** - Scrollable-tiling Wayland compositor
 - **[Catppuccin](https://github.com/catppuccin/catppuccin)** - Soothing pastel theme
-- **[greetd](https://git.sr.ht/~kennylevinsen/greetd)** - Minimal display manager
+- **[ly](https://github.com/fairyglade/ly)** - Lightweight TTY display manager
 
 ## License
 
@@ -322,5 +320,10 @@ MIT License - Feel free to use and modify as you wish!
 Issues and pull requests welcome! If you find bugs or have suggestions for improvements, please open an issue on GitLab.
 
 ---
+
+## Original Author and Source
+
+- Original upstream author: **TheBlackDon**
+- Original source repository: **https://gitlab.com/theblackdon/donarch**
 
 **Made with ❤️ by TheBlackDon**

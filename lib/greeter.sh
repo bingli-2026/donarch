@@ -80,36 +80,19 @@ configure_ly() {
 
 # Create Wayland session desktop files
 create_session_files() {
-    local install_hyprland="$1"
-    local install_niri="$2"
-    local selected_shell="${3:-noctalia}"
+    local install_niri="$1"
+    local selected_shell="${2:-noctalia}"
 
     log_info "Creating Wayland session files..."
 
     sudo mkdir -p /usr/share/wayland-sessions
 
-    # Create Hyprland session file
-    if [ "$install_hyprland" = "true" ]; then
-        local shell_name="Noctalia"
-        [ "$selected_shell" = "dms" ] && shell_name="DMS"
-        sudo tee /usr/share/wayland-sessions/hyprland-dms.desktop > /dev/null << EOFHYPR
-[Desktop Entry]
-Name=Hyprland (${shell_name})
-Comment=Hyprland with ${shell_name} shell
-Exec=Hyprland
-Type=Application
-EOFHYPR
-        log_success "Hyprland session file created"
-    fi
-
     # Create Niri session file
     if [ "$install_niri" = "true" ]; then
-        local shell_name="Noctalia"
-        [ "$selected_shell" = "dms" ] && shell_name="DMS"
-        sudo tee /usr/share/wayland-sessions/niri-dms.desktop > /dev/null << EOFNIRI
+        sudo tee /usr/share/wayland-sessions/niri-noctalia.desktop > /dev/null << EOFNIRI
 [Desktop Entry]
-Name=Niri (${shell_name})
-Comment=Niri with ${shell_name} shell
+Name=Niri (Noctalia)
+Comment=Niri with Noctalia shell
 Exec=niri-session
 Type=Application
 EOFNIRI
@@ -119,9 +102,8 @@ EOFNIRI
 
 # Main greeter setup function
 setup_greeter() {
-    local install_hyprland="$1"
-    local install_niri="$2"
-    local selected_shell="${3:-noctalia}"
+    local install_niri="$1"
+    local selected_shell="${2:-noctalia}"
 
     log_step "Setting Up Display Manager"
 
@@ -131,16 +113,13 @@ setup_greeter() {
     disable_other_display_managers
     enable_ly
     configure_ly
-    create_session_files "$install_hyprland" "$install_niri" "$selected_shell"
+    create_session_files "$install_niri" "$selected_shell"
 
     echo ""
     log_success "Display manager setup complete!"
     echo ""
     log_info "Session selection:"
-    local shell_name="Noctalia"
-    [ "$selected_shell" = "dms" ] && shell_name="DMS"
-    [ "$install_hyprland" = "true" ] && echo "  • Hyprland (${shell_name}) - Available at login"
-    [ "$install_niri" = "true" ] && echo "  • Niri (${shell_name}) - Available at login"
+    [ "$install_niri" = "true" ] && echo "  • Niri (Noctalia) - Available at login"
     echo ""
     log_warn "You will need to reboot to use the new display manager"
 }

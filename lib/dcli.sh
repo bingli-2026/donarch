@@ -21,7 +21,7 @@ If you install dcli, this installer will automatically:
   • Install dcli-arch-git from AUR
   • Create dcli configuration structure
   • Add all bd-configs packages to your dcli host.yaml
-  • Set up modules for Hyprland and Niri
+  • Set up modules for Niri
 
 You can manage your system declaratively with dcli after installation.
 
@@ -71,13 +71,12 @@ EOF
     log_success "dcli configuration structure created"
 }
 
-# Create dcli host.yaml with all bd-configs packages
+# Create dcli host.yaml with all donarch packages
 create_dcli_host_config() {
     local user_name="$1"
     local repo_dir="$2"
-    local install_hyprland="$3"
-    local install_niri="$4"
-    local optional_apps=("${@:5}")
+    local install_niri="$3"
+    local optional_apps=("${@:4}")
 
     local hostname=$(hostname)
     local config_dir="/home/$user_name/.config/arch-config"
@@ -92,21 +91,17 @@ create_dcli_host_config() {
 # https://gitlab.com/theblackdon/donarch
 
 host: $hostname
-description: BD-Configs desktop with DankMaterialShell
+description: DonArch desktop with Noctalia
 
 # Enable compositor modules
 enabled_modules:
   - base
   - themes
-  - dms
+  - shell
   - apps
 EOF
 
     # Add compositor modules based on selection
-    if [ "$install_hyprland" = "true" ]; then
-        echo "  - hyprland" >> "$host_file"
-    fi
-
     if [ "$install_niri" = "true" ]; then
         echo "  - niri" >> "$host_file"
     fi
@@ -210,17 +205,21 @@ EOF
     log_success "Themes module created"
 }
 
-# Create dcli shell module (noctalia or dms)
+# Create dcli shell module (Noctalia)
 create_shell_module() {
     local user_name="$1"
     local repo_dir="$2"
     local selected_shell="${3:-noctalia}"
     local config_dir="/home/$user_name/.config/arch-config"
-    local module_file="$config_dir/modules/dms.yaml"
+    local module_file="$config_dir/modules/shell.yaml"
 
-    if [ "$selected_shell" = "noctalia" ]; then
-        log_info "Creating Noctalia shell module..."
-        cat > "$module_file" << 'EOF'
+    if [ "$selected_shell" != "noctalia" ]; then
+        log_error "Unsupported shell for dcli module: $selected_shell"
+        return 1
+    fi
+
+    log_info "Creating Noctalia shell module..."
+    cat > "$module_file" << 'EOF'
 # Noctalia Shell and display manager
 description: Noctalia Shell with ly
 
@@ -229,18 +228,6 @@ packages:
   - quickshell
   - ly
 EOF
-    else
-        log_info "Creating DMS module..."
-        cat > "$module_file" << 'EOF'
-# DankMaterialShell and display manager
-description: DankMaterialShell with ly
-
-packages:
-  - dms-shell-git
-  - quickshell
-  - ly
-EOF
-    fi
 
     log_success "Shell module created"
 }
@@ -266,37 +253,6 @@ packages:
 EOF
 
     log_success "Apps module created"
-}
-
-# Create dcli Hyprland module
-create_hyprland_module() {
-    local user_name="$1"
-    local repo_dir="$2"
-    local config_dir="/home/$user_name/.config/arch-config"
-    local module_file="$config_dir/modules/hyprland.yaml"
-
-    log_info "Creating Hyprland module..."
-
-    cat > "$module_file" << 'EOF'
-# Hyprland compositor and utilities
-description: Hyprland dynamic tiling Wayland compositor
-
-packages:
-  - hyprland
-  - hypridle
-  - xdg-desktop-portal-hyprland
-  - xdg-desktop-portal-gtk
-  - wl-clipboard
-  - grimblast-git
-  - grim
-  - slurp
-  - nwg-displays
-  - brightnessctl
-  - pavucontrol
-  - network-manager-applet
-EOF
-
-    log_success "Hyprland module created"
 }
 
 # Create dcli Niri module
@@ -349,10 +305,9 @@ fix_dcli_ownership() {
 setup_dcli() {
     local user_name="$1"
     local repo_dir="$2"
-    local install_hyprland="$3"
-    local install_niri="$4"
-    local selected_shell="${5:-noctalia}"
-    shift 5
+    local install_niri="$3"
+    local selected_shell="${4:-noctalia}"
+    shift 4
     local optional_apps=("$@")
 
     log_step "Setting up dcli"
@@ -370,16 +325,12 @@ setup_dcli() {
     create_apps_module "$user_name" "$repo_dir"
 
     # Create compositor modules based on selection
-    if [ "$install_hyprland" = "true" ]; then
-        create_hyprland_module "$user_name" "$repo_dir"
-    fi
-
     if [ "$install_niri" = "true" ]; then
         create_niri_module "$user_name" "$repo_dir"
     fi
 
     # Create host configuration
-    create_dcli_host_config "$user_name" "$repo_dir" "$install_hyprland" "$install_niri" "${optional_apps[@]}"
+    create_dcli_host_config "$user_name" "$repo_dir" "$install_niri" "${optional_apps[@]}"
 
     # Fix ownership
     fix_dcli_ownership "$user_name"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Theme application functions for donarch installer
-# Adapted from install-hyprland-dotfiles.sh and install-niri-dotfiles.sh
+# Adapted from install-niri-dotfiles.sh
 
 # Source utils for logging
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -103,8 +103,7 @@ EOFXRES
 # Setup wallpaper symlinks
 setup_wallpapers() {
     local repo_dir="$1"
-    local install_hyprland="$2"
-    local install_niri="$3"
+    local install_niri="$2"
     local user_home=$(get_user_home)
     local user=$(detect_user)
 
@@ -115,20 +114,6 @@ setup_wallpapers() {
     if [ ! -f "$wallpaper_source" ]; then
         log_warn "Default wallpaper not found, skipping"
         return 0
-    fi
-
-    # Setup for Hyprland
-    if [ "$install_hyprland" = "true" ]; then
-        local hypr_wallpaper_dir="$user_home/.config/hypr/wallpapers"
-        mkdir -p "$hypr_wallpaper_dir"
-        ln -sf "$wallpaper_source" "$hypr_wallpaper_dir/wallpaper.png"
-
-        if [ "$EUID" -eq 0 ]; then
-            chown -h "$user:$user" "$hypr_wallpaper_dir/wallpaper.png"
-            chown "$user:$user" "$hypr_wallpaper_dir"
-        fi
-
-        log_success "Hyprland wallpaper linked"
     fi
 
     # Setup for Niri
@@ -149,8 +134,7 @@ setup_wallpapers() {
 # Main theme application function
 apply_themes() {
     local repo_dir="$1"
-    local install_hyprland="$2"
-    local install_niri="$3"
+    local install_niri="$2"
 
     log_step "Applying Themes"
 
@@ -158,7 +142,7 @@ apply_themes() {
     create_gtk2_config
     set_cursor_theme
     create_xresources
-    setup_wallpapers "$repo_dir" "$install_hyprland" "$install_niri"
+    setup_wallpapers "$repo_dir" "$install_niri"
 
     log_success "Themes applied successfully"
     echo ""

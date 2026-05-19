@@ -14,7 +14,7 @@ binds {
     //
     // Shell 启动器的绑定由 shell-switcher-binds.kdl 管理。
     // 如需，可取消注释并自定义更多与 shell 相关的快捷键。
-    // Mod+Ctrl+Space hotkey-overlay-title="Open DMS Overview" { spawn "dms" "ipc" "call" "dash" "open" "overview"; }
+    // Mod+Ctrl+Space hotkey-overlay-title="Open Overview" { toggle-overview; }
 
     // 建议的程序运行绑定：终端、应用启动器、锁屏程序。
 

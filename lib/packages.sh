@@ -100,14 +100,9 @@ install_core_packages() {
 # Install compositor packages
 install_compositor_packages() {
     local repo_dir="$1"
-    local install_hyprland="$2"
-    local install_niri="$3"
+    local install_niri="$2"
 
     log_step "Installing Compositor Packages"
-
-    if [ "$install_hyprland" = "true" ]; then
-        install_package_list "$repo_dir/packages/hyprland.txt" "Hyprland Compositor"
-    fi
 
     if [ "$install_niri" = "true" ]; then
         install_package_list "$repo_dir/packages/niri.txt" "Niri Compositor"
@@ -121,14 +116,7 @@ install_theme_packages() {
     install_package_list "$repo_dir/packages/themes.txt" "Themes"
 }
 
-# Install DMS packages (legacy - installs both shells)
-install_dms_packages() {
-    local repo_dir="$1"
-    log_step "Installing DankMaterialShell"
-    install_package_list "$repo_dir/packages/dms.txt" "DMS and Display Manager"
-}
-
-# Install selected shell packages (noctalia or dms)
+# Install selected shell packages (Noctalia only)
 install_shell_packages() {
     local repo_dir="$1"
     local selected_shell="$2"
@@ -139,21 +127,14 @@ install_shell_packages() {
     log_info "Installing display manager dependencies..."
     sudo pacman -S --needed --noconfirm ly quickshell 2>/dev/null || true
 
-    # Install the selected shell
-    if [ "$selected_shell" = "noctalia" ]; then
-        log_info "Installing Noctalia Shell..."
-        if ! "${AUR_HELPER}" -S --needed --noconfirm "noctalia-shell"; then
-            log_warn "Failed to install noctalia-shell from AUR"
-            return 1
-        fi
-    elif [ "$selected_shell" = "dms" ]; then
-        log_info "Installing Dank Material Shell (DMS)..."
-        if ! "${AUR_HELPER}" -S --needed --noconfirm "dms-shell-git"; then
-            log_warn "Failed to install dms-shell-git from AUR"
-            return 1
-        fi
-    else
+    if [ "$selected_shell" != "noctalia" ]; then
         log_error "Unknown shell selection: $selected_shell"
+        return 1
+    fi
+
+    log_info "Installing Noctalia Shell..."
+    if ! "${AUR_HELPER}" -S --needed --noconfirm "noctalia-shell"; then
+        log_warn "Failed to install noctalia-shell from AUR"
         return 1
     fi
 

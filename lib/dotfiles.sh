@@ -51,7 +51,6 @@ deploy_shared_configs() {
         "gtk-3.0"
         "gtk-4.0"
         "noctalia"
-        "shell-switch"
     )
 
     for config in "${shared_configs[@]}"; do
@@ -150,29 +149,6 @@ deploy_rime_configs() {
     log_success "fcitx5 Rime configuration deployed"
 }
 
-# Deploy Hyprland configurations
-deploy_hyprland_configs() {
-    local repo_dir="$1"
-    local user_home=$(get_user_home)
-    local config_dir="$user_home/.config"
-
-    log_info "Deploying Hyprland configurations..."
-
-    # Link hypr directory
-    if [ -d "$repo_dir/configs/hyprland/hypr" ]; then
-        log_info "Linking Hyprland configs..."
-        create_symlink "$repo_dir/configs/hyprland/hypr" "$config_dir/hypr"
-    fi
-
-    # Link zed directory
-    if [ -d "$repo_dir/configs/hyprland/zed" ]; then
-        log_info "Linking Zed editor configs..."
-        create_symlink "$repo_dir/configs/hyprland/zed" "$config_dir/zed"
-    fi
-
-    log_success "Hyprland configurations deployed"
-}
-
 # Deploy Niri configurations
 deploy_niri_configs() {
     local repo_dir="$1"
@@ -190,123 +166,26 @@ deploy_niri_configs() {
     log_success "Niri configurations deployed"
 }
 
-# Merge DMS settings (base + compositor-specific)
-merge_dms_configs() {
-    local repo_dir="$1"
-    local compositor="$2"  # "hyprland" or "niri"
-    local selected_shell="${3:-dms}"  # "noctalia" or "dms"
-    local user_home=$(get_user_home)
-    local config_dir="$user_home/.config"
-    local dms_dir="$config_dir/DankMaterialShell"
-
-    # Skip DMS config if noctalia is selected
-    if [ "$selected_shell" = "noctalia" ]; then
-        log_info "Noctalia selected - skipping DMS configuration"
-        return 0
-    fi
-
-    log_info "Merging DMS configurations for $compositor..."
-
-    # Check if jq is installed
-    if ! command_exists jq; then
-        log_warn "jq not installed, falling back to direct copy"
-        create_symlink "$repo_dir/configs/$compositor/DankMaterialShell" "$dms_dir"
-        return 0
-    fi
-
-    local base_settings="$repo_dir/configs/shared/DankMaterialShell/settings.json"
-    local compositor_settings="$repo_dir/configs/$compositor/DankMaterialShell/settings.json"
-
-    if [ ! -f "$base_settings" ]; then
-        log_warn "Base DMS settings not found, using compositor settings only"
-        create_symlink "$repo_dir/configs/$compositor/DankMaterialShell" "$dms_dir"
-        return 0
-    fi
-
-    if [ ! -f "$compositor_settings" ]; then
-        log_warn "Compositor-specific DMS settings not found, using base settings only"
-        create_symlink "$repo_dir/configs/shared/DankMaterialShell" "$dms_dir"
-        return 0
-    fi
-
-    # Create DMS directory
-    mkdir -p "$dms_dir"
-
-    # Merge JSON files with jq and replace hardcoded paths
-    jq -s '.[0] * .[1]' "$base_settings" "$compositor_settings" | \
-        sed "s|\$HOME|$user_home|g" | \
-        sed "s|/home/don/bd-configs/assets|$config_dir/donarch/assets|g" | \
-        sed "s|/home/don/.config/arch-config/modules/bdots-hypr|$config_dir/donarch/assets|g" \
-        > "$dms_dir/settings.json"
-
-    # Copy other DMS files from compositor-specific directory
-    if [ -d "$repo_dir/configs/$compositor/DankMaterialShell/themes" ]; then
-        cp -r "$repo_dir/configs/$compositor/DankMaterialShell/themes" "$dms_dir/"
-    fi
-
-    # Also copy from shared if they exist
-    if [ -d "$repo_dir/configs/shared/DankMaterialShell/themes" ]; then
-        cp -r "$repo_dir/configs/shared/DankMaterialShell/themes" "$dms_dir/" 2>/dev/null || true
-    fi
-
-    # Copy any CSS files
-    cp "$repo_dir/configs/shared/DankMaterialShell"/*.css "$dms_dir/" 2>/dev/null || true
-    cp "$repo_dir/configs/$compositor/DankMaterialShell"/*.css "$dms_dir/" 2>/dev/null || true
-
-    log_success "DMS configurations merged"
-}
-
 # Configure shell startup for compositors
 configure_shell_startup() {
     local repo_dir="$1"
-    local compositor="$2"  # "hyprland" or "niri"
+    local compositor="$2"  # "niri"
     local selected_shell="${3:-noctalia}"
     local user_home=$(get_user_home)
     local config_dir="$user_home/.config"
 
     log_info "Configuring $compositor startup for $selected_shell shell..."
 
-    local shell_name
-    local launch_cmd
-    local launcher_cmd
-
-    if [ "$selected_shell" = "noctalia" ]; then
-        shell_name="Noctalia Shell"
-        launch_cmd="qs -c noctalia-shell"
-        launcher_cmd="qs -c noctalia-shell ipc call launcher toggle"
-    else
-        shell_name="Dank Material Shell"
-        launch_cmd="dms run"
-        launcher_cmd="dms ipc call spotlight toggle"
+    if [ "$selected_shell" != "noctalia" ]; then
+        log_error "Unsupported shell: $selected_shell"
+        return 1
     fi
 
-    if [ "$compositor" = "hyprland" ]; then
-        # Create hyprland shell startup config
-        local hypr_config_dir="$config_dir/hypr"
-        mkdir -p "$hypr_config_dir"
+    local shell_name="Noctalia Shell"
+    local launch_cmd="qs -c noctalia-shell"
+    local launcher_cmd="qs -c noctalia-shell ipc call launcher toggle"
 
-        # Generate shell-start.conf
-        cat > "$hypr_config_dir/shell-start.conf" << EOF
-# Shell Switcher - Startup Configuration
-# This file is managed by shell-switch - manual edits will be overwritten
-# Current shell: ${shell_name}
-
-exec-once = ${launch_cmd}
-EOF
-
-        # Generate shell-binds.conf
-        cat > "$hypr_config_dir/shell-binds.conf" << EOF
-# Shell Switcher - Keybindings
-# This file is managed by shell-switch - manual edits will be overwritten
-# Current shell: ${shell_name}
-
-# Application launcher
-bind = SUPER, Space, exec, ${launcher_cmd}
-EOF
-
-        log_success "Hyprland shell configuration created"
-
-    elif [ "$compositor" = "niri" ]; then
+    if [ "$compositor" = "niri" ]; then
         # Create niri shell startup config
         local niri_config_dir="$config_dir/niri"
         mkdir -p "$niri_config_dir"
@@ -348,9 +227,8 @@ EOF
 # Main deployment function
 deploy_configurations() {
     local repo_dir="$1"
-    local install_hyprland="$2"
-    local install_niri="$3"
-    local selected_shell="${4:-noctalia}"
+    local install_niri="$2"
+    local selected_shell="${3:-noctalia}"
 
     log_step "Deploying Configurations"
 
@@ -363,20 +241,9 @@ deploy_configurations() {
     deploy_rime_configs "$repo_dir"
 
     # Deploy compositor-specific configs
-    if [ "$install_hyprland" = "true" ]; then
-        deploy_hyprland_configs "$repo_dir"
-        configure_shell_startup "$repo_dir" "hyprland" "$selected_shell"
-        merge_dms_configs "$repo_dir" "hyprland" "$selected_shell"
-    fi
-
     if [ "$install_niri" = "true" ]; then
         deploy_niri_configs "$repo_dir"
         configure_shell_startup "$repo_dir" "niri" "$selected_shell"
-        # If both are installed and we already merged for hyprland, skip niri merge
-        # Or we could merge both - for now, prefer the first one selected
-        if [ "$install_hyprland" != "true" ]; then
-            merge_dms_configs "$repo_dir" "niri" "$selected_shell"
-        fi
     fi
 
     log_success "All configurations deployed successfully"

@@ -119,8 +119,8 @@ print_banner() {
 ║                                              ║
 ║            DONARCH INSTALLER                 ║
 ║                                              ║
-║    Don's Arch Configs for Hyprland & Niri    ║
-║         with DankMaterialShell               ║
+║      Don's Arch Configs for Niri only       ║
+║          with Noctalia Shell                 ║
 ║                                              ║
 ╚══════════════════════════════════════════════╝
 EOF
