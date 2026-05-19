@@ -67,10 +67,10 @@ The installer will guide you through:
 - Qt5/Qt6 Wayland support and theming
 - Kvantum theme engine
 
-**DMS & Display Manager:**
+**Desktop Shell & Display Manager:**
 - DankMaterialShell (dms-shell-git)
 - Quickshell (DMS dependency)
-- greetd + greetd-dms-greeter-git
+- ly
 
 **Required Applications:**
 - kitty (terminal)
@@ -88,7 +88,7 @@ The installer will guide you through:
 ### First Login
 
 1. **Reboot your system**
-2. **At the DMS-greeter login screen:**
+2. **At the login screen:**
    - Select the Niri session
    - Log in with your credentials
 3. **Enjoy your beautiful desktop!**
@@ -214,16 +214,29 @@ Or edit the compositor config to point to your own wallpaper.
 
 ## Troubleshooting
 
-### DMS-greeter doesn't start
+### ly doesn't start
 ```bash
-# Check greetd status
-sudo systemctl status greetd
+# Check ly status
+sudo systemctl status ly@tty1
 
-# Check greetd config
-cat /etc/greetd/config.toml
+# Check ly config
+cat /etc/ly/config.ini
 
-# Restart greetd
-sudo systemctl restart greetd
+# Restart ly
+sudo systemctl restart ly@tty1
+```
+
+If your package provides `ly.service` instead of `ly@tty1.service`, replace the unit name accordingly.
+
+### Chinese input is unavailable
+```bash
+# Install fcitx5 Rime support
+sudo pacman -S fcitx5 fcitx5-gtk fcitx5-qt fcitx5-rime fcitx5-configtool
+paru -S rime-ice-git
+
+# Log out and back in after installation so environment.d is applied,
+# then open the fcitx5 UI and make sure Rime is added as an input method
+fcitx5-configtool
 ```
 
 ### Themes not applying

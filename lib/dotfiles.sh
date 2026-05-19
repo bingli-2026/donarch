@@ -103,6 +103,53 @@ deploy_shared_configs() {
     log_success "Shared configurations deployed"
 }
 
+# Deploy environment.d snippets without replacing the whole directory
+deploy_environment_configs() {
+    local repo_dir="$1"
+    local user_home=$(get_user_home)
+    local config_dir="$user_home/.config"
+    local source_dir="$repo_dir/configs/shared/environment.d"
+    local target_dir="$config_dir/environment.d"
+
+    if [ ! -d "$source_dir" ]; then
+        return 0
+    fi
+
+    log_info "Deploying environment configuration..."
+    mkdir -p "$target_dir"
+
+    local file
+    for file in "$source_dir"/*; do
+        [ -e "$file" ] || continue
+        create_symlink "$file" "$target_dir/$(basename "$file")"
+    done
+
+    log_success "Environment configuration deployed"
+}
+
+# Deploy fcitx5 Rime configuration files
+deploy_rime_configs() {
+    local repo_dir="$1"
+    local user_home=$(get_user_home)
+    local source_dir="$repo_dir/configs/shared/fcitx5/rime"
+    local target_dir="$user_home/.local/share/fcitx5/rime"
+
+    if [ ! -d "$source_dir" ]; then
+        return 0
+    fi
+
+    log_info "Deploying fcitx5 Rime configuration..."
+    mkdir -p "$target_dir"
+
+    local file
+    for file in "$source_dir"/*; do
+        [ -e "$file" ] || continue
+        create_symlink "$file" "$target_dir/$(basename "$file")"
+    done
+
+    log_success "fcitx5 Rime configuration deployed"
+}
+
 # Deploy Hyprland configurations
 deploy_hyprland_configs() {
     local repo_dir="$1"
@@ -286,10 +333,11 @@ EOF
 // This file is managed by shell-switch - manual edits will be overwritten
 // Current shell: ${shell_name}
 
-// Application launcher
-Mod+Space {
-    spawn ${launcher_cmd_args}
-    hotkey-overlay-title = "Launcher"
+binds {
+    // Application launcher
+    Mod+Space hotkey-overlay-title="Launcher" {
+        spawn ${launcher_cmd_args}
+    }
 }
 EOF
 
@@ -311,6 +359,8 @@ deploy_configurations() {
 
     # Always deploy shared configs
     deploy_shared_configs "$repo_dir"
+    deploy_environment_configs "$repo_dir"
+    deploy_rime_configs "$repo_dir"
 
     # Deploy compositor-specific configs
     if [ "$install_hyprland" = "true" ]; then

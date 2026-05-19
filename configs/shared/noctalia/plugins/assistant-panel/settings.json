@@ -1,0 +1,32 @@
+{
+  "maxHistoryLength": 10,
+  "panelDetached": true,
+  "panelPosition": "center",
+  "panelHeightRatio": 0.85,
+  "panelWidth": 520,
+  "scale": 1,
+  "ai": {
+    "provider": "google",
+    "models": {
+      "google": "gemini-3.1-flash-lite-preview",
+      "openai_compatible": "deepseek-v4-flash"
+    },
+    "apiKeys": {
+      "google": "AIzaSyAiFtO557rAirJLleFqTiiYeKHQI-WiLLA",
+      "openai_compatible": "sk-6dc06b124e5c4780996953912dc0bf11"
+    },
+    "temperature": 0.6000000000000001,
+    "systemPrompt": "You are a helpful assistant integrated into a Linux desktop shell. Be concise and helpful.\n默认使用简体中文进行回复。\n默认的环境是Archlinux + niri，并且用户处于有代理的中国大陆网络环境。",
+    "openaiLocal": false,
+    "openaiBaseUrl": "https://api.deepseek.com/v1/chat/completions",
+    "model": "gemini-3.1-flash-lite-preview"
+  },
+  "translator": {
+    "backend": "google",
+    "deeplApiKey": "",
+    "realTimeTranslation": true,
+    "targetLanguage": "zh",
+    "sourceLanguage": "en"
+  },
+  "attachmentStyle": "connected"
+}

@@ -34,18 +34,30 @@
 #  This is your file 
 # Add your configurations here
 
-# set EDITOR nvim
-set EDITOR code
+# DeepSeek / Anthropic-compatible API settings
+set -gx ANTHROPIC_BASE_URL "https://api.deepseek.com/anthropic"
+set -gx ANTHROPIC_MODEL "deepseek-v4-pro[1m]"
+set -gx ANTHROPIC_DEFAULT_OPUS_MODEL "deepseek-v4-pro"
+set -gx ANTHROPIC_DEFAULT_SONNET_MODEL "deepseek-v4-pro"
+set -gx ANTHROPIC_DEFAULT_HAIKU_MODEL "deepseek-v4-flash"
+set -gx CLAUDE_CODE_SUBAGENT_MODEL "deepseek-v4-pro"
+set -gx CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC 1
+set -gx CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK 1
+
+if not set -q DEEPSEEK_API_KEY
+    set -l deepseek_api_key (secret-tool lookup service deepseek name DEEPSEEK_API_KEY 2>/dev/null)
+    if test -n "$deepseek_api_key"
+        set -gx DEEPSEEK_API_KEY "$deepseek_api_key"
+    end
+end
+
+if set -q DEEPSEEK_API_KEY
+    set -gx ANTHROPIC_AUTH_TOKEN $DEEPSEEK_API_KEY
+end
+
+# set EDITOR and VISUAL to nvim
+set -gx EDITOR nvim
+set -gx VISUAL nvim
 
 # set aurhelper yay
-set aurhelper yay
-
-
-
-
-
-
-
-
-
-
+set aurhelper paru

@@ -11,6 +11,11 @@ environment {
     ELECTRON_OZONE_PLATFORM_HINT "auto"
     QT_QPA_PLATFORMTHEME "kvantum"
     QT_STYLE_OVERRIDE "kvantum"
+    GTK_IM_MODULE "fcitx"
+    QT_IM_MODULE "fcitx"
+    XMODIFIERS "@im=fcitx"
+    SDL_IM_MODULE "fcitx"
+    INPUT_METHOD "fcitx"
     TERMINAL "kitty"
     XCURSOR_THEME "Bibata-Modern-Ice"
     XCURSOR_SIZE "24"
@@ -285,6 +290,7 @@ layout {
 // See the binds section below for more spawn examples.
 
 // This line starts waybar, a commonly used bar for Wayland compositors.
+spawn-at-startup "/opt/v2rayn-bin/v2rayN"
 
 overview {
     // Set the backdrop color behind workspaces in the overview
@@ -319,5 +325,9 @@ animations {
 
 include "windowrules.kdl"
 include "binds.kdl"
+include "shell-switcher-binds.kdl"
 include "outputs.kdl"
 include "startup.kdl"
+include "shell-switcher-startup.kdl"
+
+include "./noctalia.kdl"

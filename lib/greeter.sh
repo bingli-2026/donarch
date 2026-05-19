@@ -32,16 +32,38 @@ disable_other_display_managers() {
     fi
 }
 
+# Resolve the correct ly service unit for the installed package
+get_ly_unit() {
+    if systemctl list-unit-files 'ly@.service' --no-legend 2>/dev/null | grep -q '^ly@\.service'; then
+        echo "ly@tty1.service"
+        return 0
+    fi
+
+    if systemctl list-unit-files 'ly.service' --no-legend 2>/dev/null | grep -q '^ly\.service'; then
+        echo "ly.service"
+        return 0
+    fi
+
+    return 1
+}
+
 # Enable ly service
 enable_ly() {
     log_info "Enabling ly display manager service..."
 
-    if systemctl is-enabled ly.service &>/dev/null; then
-        log_info "ly is already enabled"
-    else
-        sudo systemctl enable ly.service
-        log_success "ly service enabled"
+    local ly_unit
+    ly_unit=$(get_ly_unit) || {
+        log_error "Could not find a ly systemd unit to enable"
+        return 1
+    }
+
+    if systemctl is-enabled "$ly_unit" &>/dev/null; then
+        log_info "$ly_unit is already enabled"
+        return 0
     fi
+
+    sudo systemctl enable "$ly_unit"
+    log_success "$ly_unit enabled"
 }
 
 # Configure ly
@@ -53,7 +75,7 @@ configure_ly() {
     # Users can customize ~/.config/ly/config.ini later
 
     log_success "ly configuration complete (using defaults)"
-    log_info "You can customize ly at ~/.config/ly/config.ini"
+    log_info "You can customize ly at /etc/ly/config.ini"
 }
 
 # Create Wayland session desktop files

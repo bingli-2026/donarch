@@ -1,9 +1,10 @@
 // Start up Commands
 
-spawn-at-startup "dms" "run"
-// spawn-at-startup "qs" "-c" "noctalia-shell"
-spawn-at-startup "sunshine"
+// Shell startup is managed by shell-switcher-startup.kdl.
+spawn-at-startup "fcitx5" "-d"
+// spawn-at-startup "sunshine"
 spawn-at-startup "swayidle"
+spawn-at-startup "lxqt-policykit-agent"
 // spawn-sh-at-startup "$HOME/.config/niri/Scripts/zed-resize-fix.sh"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:

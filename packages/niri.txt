@@ -1,5 +1,11 @@
 niri
 xdg-desktop-portal-gnome
+fcitx5
+fcitx5-gtk
+fcitx5-qt
+fcitx5-rime
+fcitx5-configtool
+rime-ice-git
 wl-clipboard
 wl-clip-persist
 cliphist
