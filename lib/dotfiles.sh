@@ -51,6 +51,8 @@ deploy_shared_configs() {
         "gtk-3.0"
         "gtk-4.0"
         "noctalia"
+        "uv"
+        "yazi"
     )
 
     for config in "${shared_configs[@]}"; do

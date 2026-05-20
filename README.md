@@ -310,6 +310,7 @@ donarch/
 - **[Niri](https://github.com/YaLTeR/niri)** - Scrollable-tiling Wayland compositor
 - **[Catppuccin](https://github.com/catppuccin/catppuccin)** - Soothing pastel theme
 - **[ly](https://github.com/fairyglade/ly)** - Lightweight TTY display manager
+- **[donarch](https://gitlab.com/theblackdon/donarch)** - Original repository and configurations by TheBlackDon
 
 ## License
 
@@ -317,13 +318,9 @@ MIT License - Feel free to use and modify as you wish!
 
 ## Contributing
 
-Issues and pull requests welcome! If you find bugs or have suggestions for improvements, please open an issue on GitLab.
+Issues and pull requests welcome! If you find bugs or have suggestions for improvements, please open an issue on Github or on GitLab for original repository.
 
 ---
 
-## Original Author and Source
 
-- Original upstream author: **TheBlackDon**
-- Original source repository: **https://gitlab.com/theblackdon/donarch**
-
-**Made with ❤️ by TheBlackDon**
+**Made with ❤️ by TheBlackDon & Bingli**
