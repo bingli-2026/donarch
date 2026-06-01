@@ -9,7 +9,7 @@
         "density": "default",
         "enableClipPreview": true,
         "enableClipboardChips": true,
-        "enableClipboardHistory": false,
+        "enableClipboardHistory": true,
         "enableClipboardSmartIcons": true,
         "enableSessionSearch": true,
         "enableSettingsSearch": true,
@@ -18,7 +18,8 @@
         "ignoreMouseInput": false,
         "overviewLayer": false,
         "pinnedApps": [
-            "chrome-nfjhphkhjelhenadmhihghlkccjdpdkk-Default"
+            "chrome-nfjhphkhjelhenadmhihghlkccjdpdkk-Default",
+            "com.github.wwmm.easyeffects"
         ],
         "position": "follow_bar",
         "screenshotAnnotationTool": "",
@@ -789,7 +790,7 @@
         "overviewEnabled": true,
         "overviewTint": 0.6,
         "panelPosition": "follow_bar",
-        "randomIntervalSec": 300,
+        "randomIntervalSec": 600,
         "setWallpaperOnAllMonitors": true,
         "showHiddenFiles": false,
         "skipStartupTransition": false,

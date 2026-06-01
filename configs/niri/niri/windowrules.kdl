@@ -47,6 +47,12 @@ window-rule {
 
 }
 
+// Keep Flameshot windows floating (e.g. pinned screenshots).
+window-rule {
+    match app-id=r#"^flameshot$"#
+    open-floating true
+}
+
 // Floating kitty window centered on screen
 window-rule {
     match app-id=r#"^floating-kitty$"#

@@ -16,7 +16,6 @@ fish_add_path $HOME/.config/scripts
 # Set Chrome executable for Flutter web development
 set -gx CHROME_EXECUTABLE /usr/bin/google-chrome-stable
 
-# Helix editor alias
 alias vi nvim
 alias vim nvim
 
@@ -25,6 +24,8 @@ alias pctl powerprofilesctl
 alias ccc claude
 alias ccd "claude --dangerously-skip-permissions"
 alias codem "HOME=$HOME/.codex_xinta codex"
+alias codey "HOME=$HOME/.codex_xuanzhi codex"
+
 
 # Configure sudo askpass helper
 set -gx SUDO_ASKPASS $HOME/.askpass.sh

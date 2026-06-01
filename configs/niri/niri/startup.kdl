@@ -1,10 +1,10 @@
 // Start up Commands
 
 // Shell startup is managed by shell-switcher-startup.kdl.
-spawn-at-startup "fcitx5" "-d"
 // spawn-at-startup "sunshine"
 spawn-at-startup "swayidle"
 spawn-at-startup "lxqt-policykit-agent"
+spawn-sh-at-startup "systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE DBUS_SESSION_BUS_ADDRESS; systemctl --user restart fcitx5.service"
 // spawn-sh-at-startup "$HOME/.config/niri/Scripts/zed-resize-fix.sh"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:

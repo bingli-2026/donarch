@@ -1,4 +1,12 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR ALL_PROXY:http\x3a//127\x2e0\x2e0\x2e1\x3a7897
+SETUVAR HTTPS_PROXY:http\x3a//127\x2e0\x2e0\x2e1\x3a7897
+SETUVAR HTTP_PROXY:http\x3a//127\x2e0\x2e0\x2e1\x3a7897
+SETUVAR NO_PROXY:localhost\x2c127\x2e0\x2e0\x2e1\x2c\x3a\x3a1
 SETUVAR __fish_initialized:4300
+SETUVAR all_proxy:http\x3a//127\x2e0\x2e0\x2e1\x3a7897
 SETUVAR fish_user_paths:\x24HOME/\x2elocal/bin\x1e\x24HOME/\x2econfig/scripts
+SETUVAR http_proxy:http\x3a//127\x2e0\x2e0\x2e1\x3a7897
+SETUVAR https_proxy:http\x3a//127\x2e0\x2e0\x2e1\x3a7897
+SETUVAR no_proxy:localhost\x2c127\x2e0\x2e0\x2e1\x2c\x3a\x3a1

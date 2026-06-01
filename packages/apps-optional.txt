@@ -44,3 +44,4 @@ vfox-bin
 wget
 yazi
 zsh
+croc

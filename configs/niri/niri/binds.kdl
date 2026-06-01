@@ -24,6 +24,7 @@ binds {
     Mod+N hotkey-overlay-title="打开 QQ" { spawn-sh "id=$(niri msg -j windows | jq -r '.[] | select(.app_id==\"QQ\") | .id' | head -n1); [ -n \"$id\" ] && niri msg action focus-window --id \"$id\" || exec linuxqq"; }
     Mod+M hotkey-overlay-title="打开微信" { spawn-sh "id=$(niri msg -j windows | jq -r '.[] | select(.app_id==\"wechat\") | .id' | head -n1); [ -n \"$id\" ] && niri msg action focus-window --id \"$id\" || exec wechat"; }
     Mod+D hotkey-overlay-title="打开 DeepSeek" { spawn-sh "id=$(niri msg -j windows | jq -r '.[] | select((.app_id // \"\" | contains(\"hmjcdonmhijmnefklekckjkeoknbiipb\")) or ((.title // \"\") | ascii_downcase | contains(\"deepseek\"))) | .id' | head -n1); [ -n \"$id\" ] && niri msg action focus-window --id \"$id\" || gtk-launch chrome-hmjcdonmhijmnefklekckjkeoknbiipb-Default"; }
+    Mod+C hotkey-overlay-title="打开 ChatGPT" { spawn-sh "id=$(niri msg -j windows | jq -r '.[] | select((.app_id // \"\" | contains(\"cadlkienfkclaiaibeoongdcgmdikeeg\")) or ((.title // \"\") | ascii_downcase | contains(\"chatgpt\"))) | .id' | head -n1); [ -n \"$id\" ] && niri msg action focus-window --id \"$id\" || gtk-launch chrome-cadlkienfkclaiaibeoongdcgmdikeeg-Default"; }
     Mod+Shift+D hotkey-overlay-title="打开豆包" { spawn-sh "id=$(niri msg -j windows | jq -r '.[] | select((.app_id // \"\" | contains(\"nfjhphkhjelhenadmhihghlkccjdpdkk\")) or ((.title // \"\") | contains(\"豆包\"))) | .id' | head -n1); [ -n \"$id\" ] && niri msg action focus-window --id \"$id\" || gtk-launch chrome-nfjhphkhjelhenadmhihghlkccjdpdkk-Default"; }
     Mod+Shift+N hotkey-overlay-title="打开 Obsidian" { spawn "obsidian"; }
     Mod+G hotkey-overlay-title="打开 Telegram" { spawn "Telegram"; }
@@ -33,7 +34,8 @@ binds {
     Mod+Ctrl+C hotkey-overlay-title="打开 Codex-cli" { spawn "kitty" "codex"; }
     Mod+Ctrl+Return { spawn "kitty" "--class=floating-kitty"; }
     Mod+Shift+O hotkey-overlay-title="打开 OBS Studio" { spawn "flatpak" "run" "com.obsproject.Studio"; }
-    Super+Alt+L hotkey-overlay-title="锁屏：swaylock" { spawn "swaylock"; }
+    Super+Alt+L hotkey-overlay-title="锁屏：swaylock" { spawn "swaylock" "--color" "000000"; }
+    Mod+Comma hotkey-overlay-title="打开飞书" { spawn-sh "id=$(niri msg -j windows | jq -r '.[] | select((.app_id // \"\" | contains(\"feishu\")) or ((.title // \"\") | ascii_downcase | contains(\"feishu\")) or ((.title // \"\") | contains(\"飞书\"))) | .id' | head -n1); [ -n \"$id\" ] && niri msg action focus-window --id \"$id\" || exec feishu"; }
 
     // 使用 spawn-sh 来运行一个 shell 命令。当你需要使用管道、多个命令等时请使用它。
     // 注意：整个命令作为单个参数传入，会按原样传递给 `sh -c` 。
@@ -79,8 +81,6 @@ binds {
 
     Mod+Shift+Left  hotkey-overlay-title="左移列" { move-column-left; }
     Mod+Shift+Right hotkey-overlay-title="右移列" { move-column-right; }
-    //Mod+Ctrl+Down  { move-window-down; }
-    //Mod+Ctrl+Up    { move-window-up; }
     Mod+Ctrl+H     hotkey-overlay-title="左移列" { move-column-left; }
     Mod+Ctrl+J     hotkey-overlay-title="将窗口移到下方工作区" { move-window-to-workspace-down; }
     Mod+Ctrl+K     hotkey-overlay-title="将窗口移到上方工作区" { move-window-to-workspace-up; }
@@ -203,8 +203,6 @@ binds {
     Mod+BracketLeft  hotkey-overlay-title="左侧吞并或弹出窗口" { consume-or-expel-window-left; }
     Mod+BracketRight hotkey-overlay-title="右侧吞并或弹出窗口" { consume-or-expel-window-right; }
 
-    // 打开或聚焦飞书。
-    Mod+Comma hotkey-overlay-title="打开飞书" { spawn-sh "id=$(niri msg -j windows | jq -r '.[] | select((.app_id // \"\" | contains(\"feishu\")) or ((.title // \"\") | ascii_downcase | contains(\"feishu\")) or ((.title // \"\") | contains(\"飞书\"))) | .id' | head -n1); [ -n \"$id\" ] && niri msg action focus-window --id \"$id\" || exec feishu"; }
     // 将聚焦列底部的窗口弹出到右侧。
     Mod+Period { expel-window-from-column; }
 
@@ -220,7 +218,7 @@ binds {
     // 使该列"填充剩余空间"。
     // Mod+Ctrl+F { expand-column-to-available-width; }
 
-    Mod+C { center-column; }
+    Mod+Shift+C { center-column; }
 
     // 在屏幕上居中所有完全可见的列。
     Mod+Alt+C { center-visible-columns; }
@@ -255,9 +253,9 @@ binds {
     // Mod+Space       { switch-layout "next"; }
     // Mod+Shift+Space { switch-layout "prev"; }
 
-    Mod+Shift+S hotkey-overlay-title="截图" { screenshot; }
-    Ctrl+Print hotkey-overlay-title="截取屏幕" { screenshot-screen; }
-    Alt+Print hotkey-overlay-title="截取窗口" { screenshot-window; }
+    Mod+Shift+S hotkey-overlay-title="截图" { spawn "flameshot" "gui"; }
+    Ctrl+Print hotkey-overlay-title="截取屏幕" { spawn "flameshot" "full"; }
+    Alt+Print hotkey-overlay-title="截取窗口" { spawn "flameshot" "gui"; }
 
     // 像远程桌面客户端或软件 KVM 切换这类应用，可能会请求 niri 停止处理此处定义的键盘快捷键，
     // 例如将按键原样转发到远程机器。绑定一个紧急开关来切换抑制器是个好主意，
