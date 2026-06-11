@@ -14,7 +14,7 @@ binds {
     //
     // Shell 启动器的绑定由 shell-switcher-binds.kdl 管理。
     // 如需，可取消注释并自定义更多与 shell 相关的快捷键。
-    // Mod+Ctrl+Space hotkey-overlay-title="Open Overview" { toggle-overview; }
+    // Mod+Ctrl+Space hotkey-overlay-title="打开概览" { toggle-overview; }
 
     // 建议的程序运行绑定：终端、应用启动器、锁屏程序。
 
@@ -64,7 +64,7 @@ binds {
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
-    // 打开/关闭 Overview：工作区和窗口的缩略视图。
+    // 打开/关闭概览：工作区和窗口的缩略视图。
     // 你也可以将鼠标移动到左上角热区，或在触控板上四指向上滑动。
     Mod+X repeat=false { toggle-overview; }
 
@@ -115,11 +115,11 @@ binds {
     Mod+Shift+Ctrl+K     { move-workspace-up; }
     Mod+Shift+Ctrl+L     { move-workspace-to-monitor-right; }
 
-    // Alternatively, there are commands to move just a single window:
+    // 另外，也有只移动单个窗口的命令：
     // Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
     // ...
 
-    // And you can also move a whole workspace to another monitor:
+    // 你也可以把整个工作区移动到另一台显示器：
     // Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
     // ...
 
@@ -191,7 +191,7 @@ binds {
     Mod+Ctrl+8 { move-column-to-workspace 8; }
     Mod+Ctrl+9 { move-column-to-workspace 9; }
 
-    // Alternatively, there are commands to move just a single window:
+    // 另外，也有只移动单个窗口的命令：
     // Mod+Ctrl+1 { move-window-to-workspace 1; }
 
     // 在当前与上一个工作区之间切换焦点。
@@ -207,7 +207,7 @@ binds {
     Mod+Period { expel-window-from-column; }
 
     Mod+R hotkey-overlay-title="切换预设列宽" { switch-preset-column-width; }
-    // Cycling through the presets in reverse order is also possible.
+    // 也可以反向循环这些预设。
     // Mod+R { switch-preset-column-width-back; }
     Mod+Shift+R { switch-preset-window-height; }
     Mod+Ctrl+R { reset-window-height; }

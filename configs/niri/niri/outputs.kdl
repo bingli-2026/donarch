@@ -1,16 +1,16 @@
-// Left ultrawide monitor
+// 左侧超宽屏
 output "DP-2" {
     mode "3440x1440@180"
     position x=0 y=0
 }
 
-// Middle ultrawide monitor
+// 中间超宽屏
 output "DP-1" {
     mode "3440x1440@180"
     position x=3440 y=0
 }
 
-// Right vertical monitor
+// 右侧竖屏
 output "DP-3" {
     mode "2560x1440@59.951"
     position x=6880 y=-35

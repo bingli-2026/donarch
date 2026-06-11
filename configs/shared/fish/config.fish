@@ -4,6 +4,7 @@ if status is-interactive
     # Enable starship
     starship init fish | source
     vfox activate fish | source
+    zoxide init fish | source
 end
 
 # Set cursor theme for niri compositor
@@ -29,6 +30,7 @@ alias codey "HOME=$HOME/.codex_xuanzhi codex"
 
 # Configure sudo askpass helper
 set -gx SUDO_ASKPASS $HOME/.askpass.sh
+set -gx DOCKER_BUILDKIT 1
 
 
 # pnpm
